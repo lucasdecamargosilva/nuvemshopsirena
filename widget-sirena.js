@@ -190,13 +190,13 @@
         .q-btn-inline-provador {
             display: flex; align-items: center; justify-content: center; gap: 7px;
             width: 100%; height: 41px; padding: 0 16px;
-            background: #fff; color: #F39C12;
-            border: 1.5px solid #F39C12; border-radius: 4px;
+            background: #fff; color: var(--c-ink);
+            border: 1.5px solid var(--c-ink); border-radius: 4px;
             font-family: 'Poppins', var(--font-body), sans-serif; font-size: 14px; font-weight: 400; letter-spacing: normal; text-transform: uppercase;
             cursor: pointer; transition: background 0.25s, color 0.25s;
             margin-bottom: 10px; box-sizing: border-box;
         }
-        .q-btn-inline-provador:hover { background: #F39C12; color: #fff; }
+        .q-btn-inline-provador:hover { background: var(--c-ink); color: #fff; }
         .q-btn-inline-provador svg { width: 14px; height: 14px; flex-shrink: 0; }
 
         /* ── Modal overlay ── */
@@ -1147,19 +1147,24 @@
             realRow.parentNode.insertBefore(inlineBtn2, realRow);
             return true;
         }
+        // Os dois ancoradouros rodavam SEMPRE e neste tema ambos acertam perto do
+        // Comprar real -> DOIS botoes iguais na tela. Agora e' um OU outro: tenta o
+        // botao real (o certo na Nuvemshop) e so cai no generico se ele nunca aparecer.
         if (!_qPlaceInlineReal()) {
             var _qTries2 = 0;
             var _qIv2 = setInterval(function () {
                 _qTries2++;
-                if (_qPlaceInlineReal() || _qTries2 > 40) clearInterval(_qIv2);
-            }, 250);
-        }
-
-        if (!_qPlaceInline()) {
-            var _qTries = 0;
-            var _qIv = setInterval(function () {
-                _qTries++;
-                if (_qPlaceInline() || _qTries > 40) clearInterval(_qIv);
+                if (_qPlaceInlineReal()) { clearInterval(_qIv2); return; }
+                if (_qTries2 > 40) {   // ~10s sem achar o botao real: usa o generico
+                    clearInterval(_qIv2);
+                    if (!_qPlaceInline()) {
+                        var _qTries = 0;
+                        var _qIv = setInterval(function () {
+                            _qTries++;
+                            if (_qPlaceInline() || _qTries > 40) clearInterval(_qIv);
+                        }, 250);
+                    }
+                }
             }, 250);
         }
         const genBtn      = document.getElementById('q-btn-generate');
