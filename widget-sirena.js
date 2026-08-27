@@ -194,7 +194,7 @@
             border: 1.5px solid var(--c-ink); border-radius: 4px;
             font-family: 'Poppins', var(--font-body), sans-serif; font-size: 14px; font-weight: 400; letter-spacing: normal; text-transform: uppercase;
             cursor: pointer; transition: background 0.25s, color 0.25s;
-            margin-bottom: 10px; box-sizing: border-box;
+            margin-top: 10px; box-sizing: border-box;
         }
         .q-btn-inline-provador:hover { background: var(--c-ink); color: #fff; }
         .q-btn-inline-provador svg { width: 14px; height: 14px; flex-shrink: 0; }
@@ -1122,7 +1122,7 @@
             if (inlineBtn.isConnected) return true;
             var buyBtn = document.querySelector('.js-addtocart, .btn-add-to-cart, [data-component="product.add-to-cart"]');
             var buyRow = buyBtn ? (buyBtn.closest('.form-row') || buyBtn) : null;
-            if (buyRow && buyRow.parentNode) { buyRow.parentNode.insertBefore(inlineBtn, buyRow); return true; }
+            if (buyRow && buyRow.parentNode) { buyRow.parentNode.insertBefore(inlineBtn, buyRow.nextSibling); return true; }
             var variantsContainer = document.querySelector('.js-product-variants');
             if (variantsContainer && variantsContainer.parentNode) {
                 variantsContainer.parentNode.insertBefore(inlineBtn, variantsContainer.nextSibling); return true;
@@ -1144,7 +1144,8 @@
             var inlineBtn2 = inlineBtn.cloneNode(true);
             inlineBtn2.classList.add('q-btn-inline-provador-real');
             inlineBtn2.addEventListener('click', _qInlineClick);
-            realRow.parentNode.insertBefore(inlineBtn2, realRow);
+            // Abaixo do Comprar (pedido do lojista): insere depois da linha do botao.
+            realRow.parentNode.insertBefore(inlineBtn2, realRow.nextSibling);
             return true;
         }
         // Os dois ancoradouros rodavam SEMPRE e neste tema ambos acertam perto do
