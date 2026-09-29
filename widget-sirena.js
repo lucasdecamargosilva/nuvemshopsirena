@@ -3714,8 +3714,9 @@ function recomendarSirena(e) {
                      : { A: '364561041', AB: '364561058', AF: '364561068', ABF: '364561076' };
       return { tipo: 'provisoria', opcoes: [op(L_(base[e.trat]), SELO.provisoria)] };
     }
+    // multifocal: sempre a MAIS CARA do nivel (pedido do Lucas, 29/09/2026)
     var ops = ['Go', 'Light', 'Smart'].map(function (ln) {
-      return op(LENTES.filter(function (l) { return l.visao === 'multi' && l.linha === ln && l.indice === ind && l.trat === e.trat; })[0], SELO.provisoria);
+      return op(LENTES.filter(function (l) { return l.visao === 'multi' && l.linha === ln && l.trat === e.trat && permitida(l, bal); }).sort(porPreco).reverse()[0], SELO.provisoria);
     }).filter(Boolean);
     return { tipo: 'provisoria', opcoes: ops };
   }
@@ -3732,7 +3733,7 @@ function recomendarSirena(e) {
     var ops2 = ['Go', 'Light', 'Smart'].map(function (ln) {
       var c = LENTES.filter(function (l) {
         return l.visao === 'multi' && l.linha === ln && l.trat === e.trat && permitida(l, bal) && serve(l, olhos, add);
-      }).sort(porPreco);
+      }).sort(porPreco).reverse();   // sempre a MAIS CARA que atende (pedido do Lucas, 29/09/2026)
       return op(c[0], SELO.avaliar);
     }).filter(Boolean);
     if (!ops2.length) return { atendimento: 'fora_grade', olhos: olhos };
