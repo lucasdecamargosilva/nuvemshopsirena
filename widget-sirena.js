@@ -844,6 +844,7 @@
 .q-btn-wa { width:100%; margin-top:9px; padding:13px 16px; border:none; border-radius:14px; background:#1f8f4e; color:#fff;
             font-family:inherit; font-weight:700; font-size:12.5px; letter-spacing:.3px; cursor:pointer; }
 .q-btn-wa:hover { background:#18763f; }
+#q-add-lente, .q-btn-wa { display:flex; justify-content:center; align-items:center; text-align:center; gap:8px; }
 .q-preco-de { font-size:.62em; font-weight:500; color:var(--c-muted); margin-right:4px; }
     `;
 
