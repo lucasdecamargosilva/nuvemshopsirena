@@ -3809,7 +3809,7 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
     }
     /* Piloto: fluxo de lentes SO nestes produtos (handle da URL /produtos/<handle>/).
        Lista vazia = desligado em todos. Liberar para todos = PL_LENTES_TODOS = true. */
-    var PL_LENTES_PRODUTOS = [];
+    var PL_LENTES_PRODUTOS = ['linha-sirena-gwen'];
     var PL_LENTES_TODOS = false;
     function liberadoAqui() {
         if (PL_LENTES_TODOS) return true;
