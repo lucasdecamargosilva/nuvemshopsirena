@@ -3807,8 +3807,18 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
         return ((document.getElementById('q-result-prodname') || {}).textContent
             || (document.querySelector('h1.js-product-name,h1.product-title,h1') || {}).innerText || document.title || '').trim();
     }
+    /* Piloto: fluxo de lentes SO nestes produtos (handle da URL /produtos/<handle>/).
+       Lista vazia = desligado em todos. Liberar para todos = PL_LENTES_TODOS = true. */
+    var PL_LENTES_PRODUTOS = [];
+    var PL_LENTES_TODOS = false;
+    function liberadoAqui() {
+        if (PL_LENTES_TODOS) return true;
+        var m = location.pathname.match(/\/produtos\/([^/?#]+)/);
+        return !!m && PL_LENTES_PRODUTOS.indexOf(decodeURIComponent(m[1]).toLowerCase()) !== -1;
+    }
     function ehArmacaoDeGrau() {
         var n = (document.querySelector('h1.js-product-name,h1.product-title,h1') || {}).innerText || '';
+        if (!liberadoAqui()) return false;
         return /de\s+grau/i.test(n) && !/estojo|lentes?\s+de\s+grau|clip\s*-?\s*on/i.test(n);
     }
     function ehBalgriff() { return /balgriff/i.test(nomeProduto()); }
