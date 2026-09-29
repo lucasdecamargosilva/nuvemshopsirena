@@ -677,6 +677,174 @@
         }
         .q-powered-footer span { font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--c-muted); }
         .q-quantic-logo { height: 20px; opacity: 0.7; }
+/* ====== ESCOLHER LENTES ====== */
+
+        .q-btn-lentes {
+            width: 100%; margin-top: 9px; padding: 12px 16px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+            background: var(--c-ink); color: #fff; border: 1px solid var(--c-ink); border-radius: 14px;
+            font-family: var(--font-body); cursor: pointer; box-sizing: border-box; transition: background .2s;
+        }
+        .q-btn-lentes:hover { background: #5e375e; border-color: #5e375e; }
+        .q-btn-lentes .q-lentes-t { font-size: 14px; font-weight: 700; letter-spacing: .4px; line-height: 1.2; }
+        .q-btn-lentes .q-lentes-s { font-size: 10.5px; font-weight: 500; opacity: .92; line-height: 1.2; }
+        /* botao secundario "COMPRAR SOMENTE A ARMACAO": IGUAL ao primario (.q-btn-black)
+           em tamanho, so troca o rosa por PRETO. flex centraliza o texto; font-size/
+           letter-spacing um tico menores pro rotulo (mais longo) caber em 1 linha. */
+        #q-so-armacao {
+            width: 100%; height: 52px; margin-top: 9px; box-sizing: border-box;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--c-ink); color: #fff; border: none; border-radius: 14px;
+            font-family: var(--font-display); font-size: 13px; letter-spacing: 2px;
+            text-transform: uppercase; white-space: nowrap; cursor: pointer; transition: opacity .2s;
+        }
+        #q-so-armacao:hover { opacity: .88; }
+        /* botao ESCOLHER LENTES E COMPRAR na PAGINA DO PRODUTO (abaixo do comprar) */
+        .q-btn-lentes-produto {
+            /* margem EMBAIXO: o botao fica acima do COMPRAR, entao o respiro separa os dois */
+            width: 100%; margin: 10px 0 16px; padding: 14px 16px; box-sizing: border-box;
+            display: flex; align-items: center; justify-content: center; gap: 9px;
+            background: var(--c-ink); color: #fff; border: none; border-radius: 0;
+            font-family: 'Work Sans', var(--font-body), sans-serif; font-size: 11px; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: opacity .2s;
+        }
+        .q-btn-lentes-produto svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+        /* Barra fixa do scroll: tira estreita — botoes menores que na pagina */
+        .q-btn-lentes-produto.q-btn-lentes-compacto {
+            height: 34px !important; margin: 4px 0 6px; padding: 0 10px;
+            font-size: 9.5px; letter-spacing: 1px; gap: 6px;
+        }
+        .q-btn-lentes-produto.q-btn-lentes-compacto svg { width: 13px; height: 13px; }
+        .q-btn-inline-provador.q-btn-provador-compacto {
+            height: 34px; margin: 6px 0 4px; font-size: 11.5px;
+        }
+        .q-btn-inline-provador.q-btn-provador-compacto svg { width: 12px; height: 12px; }
+
+        .q-btn-lentes-produto:hover { opacity: .9; }
+
+/* atributo hidden manda: sem isso, classes com display:flex (.q-lendo etc.)
+   vencem o [hidden] por ordem de fonte e o elemento aparece cedo demais */
+#q-modal-ia [hidden] { display: none !important; }
+
+/* ===== fluxo ESCOLHER LENTES (mesma linguagem visual do provador) ===== */
+#q-step-lentes, #q-step-receita, #q-step-upload, #q-step-lentes-tel, #q-step-uso, #q-step-lente-final {
+    display: none; flex-direction: column; padding: 26px 28px 30px; gap: 0;
+}
+.q-passos { display:flex; gap:5px; margin-bottom:20px; }
+.q-passos i { height:3px; flex:1; background:var(--c-line); border-radius:2px; }
+.q-passos i.on   { background:var(--c-ink); }
+.q-passos i.done { background:var(--c-accent); opacity:.45; }
+
+.q-opt {
+    width:100%; text-align:left; background:var(--c-bg);
+    border:1.5px solid var(--c-line); border-radius:14px;
+    padding:15px 16px; margin-bottom:10px; cursor:pointer; font-family:var(--font-body);
+    display:flex; flex-direction:column; gap:3px; transition:border-color .18s, background .18s;
+}
+.q-opt:hover { border-color:var(--c-ink); background:var(--c-surface); }
+.q-opt-t { font-size:14px; font-weight:600; color:var(--c-ink-text, var(--c-ink)); }
+.q-opt-s { font-size:11.5px; color:var(--c-muted); line-height:1.45; }
+.q-opt-destaque { border-color:var(--c-ink); background:var(--c-surface); }
+
+.q-lente-drop {
+    border:2px dashed var(--c-line); border-radius:14px; padding:32px 20px;
+    text-align:center; cursor:pointer; transition:border-color .18s, background .18s;
+}
+.q-lente-drop:hover { border-color:var(--c-ink); background:var(--c-surface); }
+.q-lente-drop-i { font-size:30px; margin-bottom:8px; }
+.q-lente-drop-t { font-size:13.5px; font-weight:600; color:var(--c-ink-text, var(--c-ink)); }
+.q-lente-drop-s { font-size:11px; color:var(--c-muted); margin-top:3px; }
+
+.q-lendo { display:flex; flex-direction:column; align-items:center; gap:12px; padding:22px 10px;
+           font-size:12.5px; color:var(--c-muted); }
+.q-lendo img { max-width:140px; max-height:180px; border-radius:10px;
+               border:1px solid var(--c-line); box-shadow:0 4px 14px rgba(0,0,0,.10); }
+.q-lendo-arq { font-size:11px; font-weight:600; color:var(--c-ink-text, var(--c-ink));
+               word-break:break-all; text-align:center; max-width:220px; }
+.q-spin { width:26px; height:26px; border:2.5px solid var(--c-line);
+          border-top-color:var(--c-ink); border-radius:50%; animation:q-spin .8s linear infinite; }
+@keyframes q-spin { to { transform: rotate(360deg); } }
+
+.q-banner-ia { background:var(--c-surface); border:1px solid var(--c-line); border-radius:11px;
+               padding:11px 13px; font-size:11.5px; line-height:1.5; color:var(--c-ink-text, var(--c-ink));
+               margin-bottom:14px; }
+.q-erro-leitura { background:#fff5f5; border:1px solid #fbc4c4; border-radius:11px;
+                  padding:11px 13px; font-size:11.5px; line-height:1.55; color:#9b2c2c; margin-top:10px; }
+.q-erro-leitura a { color:#9b2c2c; font-weight:700; text-decoration:underline; cursor:pointer; }
+
+.q-olho { border:1.5px solid var(--c-line); border-radius:13px; padding:12px 13px; margin-bottom:11px; }
+.q-olho-tag { font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--c-muted);
+              font-weight:600; display:block; margin-bottom:9px; }
+.q-olho-campos { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.q-olho-campos label { font-size:9.5px; text-transform:uppercase; letter-spacing:.06em;
+                       color:var(--c-muted); display:flex; flex-direction:column; gap:4px; }
+.q-olho-campos select { border:1.5px solid var(--c-line); border-radius:9px; padding:8px 6px;
+                        font-size:12.5px; font-family:var(--font-body); background:var(--c-bg);
+                        color:var(--c-ink-text, var(--c-ink)); }
+
+.q-card-lente { border:2px solid var(--c-ink); border-radius:14px; padding:17px; margin-bottom:12px; }
+/* foto do produto vinda da loja (1024px: deixamos o browser reduzir) */
+.q-lente-foto { width:100%; max-width:190px; height:auto; display:block; margin:0 auto 13px;
+                border-radius:10px; background:var(--c-surface); }
+.q-opt-lente { flex-direction:row; align-items:center; gap:12px; }
+.q-opt-lente.is-selected { border-color:var(--c-ink); background:var(--c-surface);
+                           box-shadow:0 0 0 1px var(--c-ink); }
+.q-opt-selected { display:none; margin-left:auto; flex-shrink:0; border-radius:999px;
+                  padding:4px 8px; background:var(--c-ink); color:var(--c-bg);
+                  font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+.q-opt-lente.is-selected .q-opt-selected { display:inline-flex; }
+.q-opt-foto  { width:52px; height:52px; object-fit:cover; border-radius:9px; flex-shrink:0;
+               background:var(--c-surface); }
+.q-opt-txt   { display:flex; flex-direction:column; gap:3px; min-width:0; }
+.q-card-lente-status { display:inline-flex; align-items:center; border-radius:999px;
+                       padding:5px 9px; margin-bottom:11px; background:var(--c-ink);
+                       color:var(--c-bg); font-size:9px; font-weight:700;
+                       letter-spacing:.08em; text-transform:uppercase; }
+.q-card-lente-nome { font-size:14px; font-weight:600; line-height:1.35; }
+.q-card-lente-mat  { font-size:11px; color:var(--c-muted); margin:3px 0 11px; }
+.q-card-lente-preco{ font-size:27px; font-weight:700; }
+.q-card-lente-parc { font-size:11.5px; color:var(--c-muted); margin-top:1px; }
+.q-card-lente-pq   { background:var(--c-surface); border-radius:10px; padding:11px 12px;
+                     margin-top:13px; font-size:12px; line-height:1.5; }
+.q-card-lente-pq b { display:block; font-size:9.5px; text-transform:uppercase; letter-spacing:.1em;
+                     color:var(--c-muted); margin-bottom:4px; }
+.q-grau-anotado { background:var(--c-bg); border:1px solid var(--c-line); border-radius:10px;
+                  padding:11px 12px; margin-top:11px; display:flex; flex-direction:column; gap:3px;
+                  font-size:12.5px; font-variant-numeric:tabular-nums; }
+.q-grau-anotado b { font-size:9.5px; text-transform:uppercase; letter-spacing:.1em;
+                    color:var(--c-muted); margin-bottom:3px; }
+.q-disclaimer { font-size:10.5px; color:var(--c-muted); line-height:1.5; margin-top:11px;
+                padding-top:11px; border-top:1px solid var(--c-line); }
+.q-resumo { font-size:11.5px; color:var(--c-muted); line-height:1.6; margin-bottom:8px; }
+
+.q-sair, .q-voltar { display:block; text-align:center; font-size:11.5px; color:var(--c-muted);
+                     text-decoration:underline; cursor:pointer; margin-top:12px; }
+.q-sair:hover, .q-voltar:hover { color:var(--c-ink); }
+.q-btn-sub { display:block; font-size:10px; font-weight:500; opacity:.8; margin-top:2px;
+             letter-spacing:.02em; text-transform:none; }
+.q-btn-outline .q-btn-sub { color:var(--c-muted); opacity:1; }
+/* alternativas de lente (bloco que a Maxilook nao usava) */
+.q-alt-titulo { font-size:9.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--c-muted);
+                font-weight:600; margin:16px 0 8px; }
+
+/* botao em estado "adicionando": bolinha girando + travado contra clique duplo */
+.q-btn-black[disabled], .q-btn-outline[disabled] { opacity:.75; cursor:default; pointer-events:none; }
+.q-add-spin { display:inline-block; width:14px; height:14px; margin-right:8px; vertical-align:-2px;
+              border:2px solid rgba(255,255,255,.45); border-top-color:#fff; border-radius:50%;
+              animation:q-add-gira .8s linear infinite; }
+.q-btn-outline .q-add-spin { border-color:rgba(0,0,0,.25); border-top-color:var(--c-ink); }
+@keyframes q-add-gira { to { transform: rotate(360deg); } }
+
+
+
+.q-aceite { display:flex; gap:10px; align-items:flex-start; background:var(--c-surface); border:1px solid var(--c-line);
+            border-radius:11px; padding:11px 13px; margin:10px 0 12px; font-size:11.5px; line-height:1.55; color:var(--c-ink); cursor:pointer; }
+.q-aceite input { margin-top:2px; width:17px; height:17px; flex-shrink:0; accent-color:var(--c-ink); }
+.q-btn-wa { width:100%; margin-top:9px; padding:13px 16px; border:none; border-radius:14px; background:#1f8f4e; color:#fff;
+            font-family:inherit; font-weight:700; font-size:12.5px; letter-spacing:.3px; cursor:pointer; }
+.q-btn-wa:hover { background:#18763f; }
+.q-preco-de { font-size:.62em; font-weight:500; color:var(--c-muted); margin-right:4px; }
     `;
 
 
@@ -796,6 +964,7 @@
                                 <div class="q-seal"><i class="ph-fill ph-lock-key"></i><span>Pagamento<br>Seguro</span></div>
                             </div>
                             <button class="q-btn-buy-now" id="q-btn-buy-now" style="display:none;">Comprar Agora</button>
+                            <button class="q-btn-lentes" id="q-btn-escolher-lentes" style="display:none;"><span class="q-lentes-t">ESCOLHER LENTES</span><span class="q-lentes-s">a partir de R$ 129,00 &middot; monte seu &oacute;culos completo</span></button>
                             <div id="q-related-products" style="display:none;">
                                 <h4>Veja tamb&eacute;m</h4>
                                 <div class="q-related-grid" id="q-related-grid"></div>
@@ -810,6 +979,143 @@
                         <button class="q-btn-outline" id="q-error-back">Voltar ao Produto</button>
                         <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,0,0,.08);"><p style="font-size:12px;color:var(--c-muted);margin:0 0 8px;">Continua com problema? Fale direto com a Provou Levou:</p><a href="https://wa.me/5511965749173?text=Ol%C3%A1!%20Tive%20um%20problema%20ao%20usar%20o%20provador." target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:7px;background:#25D366;color:#fff;border-radius:10px;padding:10px 18px;font-family:inherit;font-weight:700;font-size:13px;text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.9c0 2.1.55 4.06 1.6 5.8L2 22l4.44-1.65a9.9 9.9 0 0 0 5.6 1.72h.01c5.46 0 9.9-4.45 9.9-9.9C21.95 6.45 17.5 2 12.04 2zm5.8 14.15c-.24.68-1.4 1.3-1.94 1.34-.5.05-1.13.07-1.82-.11-.42-.13-.96-.31-1.65-.61-2.9-1.25-4.8-4.17-4.94-4.36-.15-.19-1.18-1.57-1.18-2.99 0-1.42.75-2.12 1.01-2.41.27-.29.58-.36.77-.36l.55.01c.18.01.42-.07.66.5.24.59.83 2.04.9 2.18.07.15.12.32.02.51-.1.19-.15.31-.29.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.75 1.24 1.62 2.01 1.11.99 2.05 1.3 2.34 1.44.29.15.46.12.63-.07.17-.19.72-.84.91-1.13.19-.29.39-.24.66-.14.27.1 1.7.8 1.99.95.29.15.48.22.55.34.07.12.07.71-.17 1.39z"/></svg> Falar com a Provou Levou</a></div>
                     </div>
+
+<!-- ============ ESCOLHER LENTES (Sirena) ============ -->
+<div id="q-step-lentes">
+    <div class="q-passos"><i class="on"></i><i></i><i></i><i></i></div>
+    <span class="q-section-label">Como voc&ecirc; quer seus &oacute;culos?</span>
+    <button class="q-opt" data-visao="mono">
+        <span class="q-opt-t">Com grau para longe ou perto</span>
+        <span class="q-opt-s">Lente monofocal</span></button>
+    <button class="q-opt" data-visao="multi">
+        <span class="q-opt-t">Com grau multifocal</span>
+        <span class="q-opt-s">Diferentes dist&acirc;ncias na mesma lente</span></button>
+    <button class="q-opt" data-visao="semgrau">
+        <span class="q-opt-t">Sem grau com filtro de luz azul</span>
+        <span class="q-opt-s">Prote&ccedil;&atilde;o para as telas, sem receita</span></button>
+    <button class="q-opt" data-carrinho="sem">
+        <span class="q-opt-t">Somente a arma&ccedil;&atilde;o</span>
+        <span class="q-opt-s">Sem lentes</span></button>
+</div>
+
+<div id="q-step-receita">
+    <div class="q-passos"><i class="done"></i><i class="on"></i><i></i><i></i></div>
+    <span class="q-section-label">Qual tratamento voc&ecirc; quer?</span>
+    <button class="q-opt" data-trat="A">
+        <span class="q-opt-t">Antirreflexo</span>
+        <span class="q-opt-s">O essencial, para o dia a dia</span></button>
+    <button class="q-opt" data-trat="AB">
+        <span class="q-opt-t">Antirreflexo + filtro de luz azul</span>
+        <span class="q-opt-s">Prote&ccedil;&atilde;o Digital, para quem passa o dia em telas</span></button>
+    <button class="q-opt" data-trat="AF" data-so-mono="1">
+        <span class="q-opt-t">Antirreflexo + fotossens&iacute;vel</span>
+        <span class="q-opt-s">Escurece no sol, clareia dentro de casa</span></button>
+    <button class="q-opt" data-trat="ABF" data-so-mono="1">
+        <span class="q-opt-t">Antirreflexo + fotossens&iacute;vel + luz azul</span>
+        <span class="q-opt-s">Escurece no sol <b>e</b> protege das telas</span></button>
+    <a class="q-voltar" data-ir="q-step-lentes">voltar</a>
+    <a class="q-sair" data-carrinho="sem">prefiro s&oacute; a arma&ccedil;&atilde;o</a>
+</div>
+
+<div id="q-step-upload">
+    <div class="q-passos"><i class="done"></i><i class="done"></i><i class="on"></i><i></i></div>
+    <span class="q-section-label">Agora, sua receita</span>
+    <input type="file" id="q-arquivo" accept="image/*,application/pdf" hidden>
+    <button class="q-opt" id="q-abrir-arquivo">
+        <span class="q-opt-t">&#128196; Enviar minha receita</span>
+        <span class="q-opt-s">Foto ou arquivo leg&iacute;vel &mdash; a gente l&ecirc; pra voc&ecirc;</span></button>
+    <button class="q-opt" data-receita="digitar">
+        <span class="q-opt-t">&#9000; Digitar minha receita</span>
+        <span class="q-opt-s">Campos separados por olho</span></button>
+    <button class="q-opt q-opt-destaque" data-receita="depois">
+        <span class="q-opt-t">&#128172; Estou sem a receita</span>
+        <span class="q-opt-s">Escolha a lente agora e envie a receita depois pelo WhatsApp</span></button>
+
+    <div id="q-lendo" class="q-lendo" hidden>
+        <img id="q-thumb" alt="" hidden>
+        <div class="q-lendo-arq" id="q-arq-nome"></div>
+        <div class="q-spin"></div>
+        <div>Lendo sua receita&hellip;</div>
+    </div>
+    <div id="q-erro-leitura" class="q-erro-leitura" hidden></div>
+
+    <a class="q-voltar" data-ir="q-step-receita">voltar</a>
+    <a class="q-sair" data-carrinho="sem">prefiro s&oacute; a arma&ccedil;&atilde;o</a>
+</div>
+
+<div id="q-step-uso">
+    <div class="q-passos"><i class="done"></i><i class="done"></i><i class="done"></i><i class="on"></i></div>
+    <span class="q-section-label">Voc&ecirc; quer estes &oacute;culos para longe ou para perto?</span>
+    <div class="q-tip-box" style="margin-bottom:16px;">
+        <i class="ph ph-lightbulb"></i>
+        <span>Sua receita tem adi&ccedil;&atilde;o (grau de perto). A lente monofocal atende uma dist&acirc;ncia s&oacute;.</span>
+    </div>
+    <button class="q-opt" data-uso="longe">
+        <span class="q-opt-t">Para longe</span>
+        <span class="q-opt-s">Dirigir, TV, rua</span></button>
+    <button class="q-opt" data-uso="perto">
+        <span class="q-opt-t">Para perto</span>
+        <span class="q-opt-s">Leitura, celular</span></button>
+    <a class="q-voltar" data-ir="q-step-lente-final">voltar</a>
+</div>
+
+<div id="q-step-lentes-tel">
+    <div class="q-passos"><i class="on"></i><i></i><i></i><i></i></div>
+    <span class="q-section-label">Qual &eacute; o seu WhatsApp?</span>
+    <div class="q-tip-box" style="margin-bottom:16px;">
+        <i class="ph ph-lightbulb"></i>
+        <span>Guardamos sua escolha de lente e te ajudamos pelo WhatsApp se precisar.</span>
+    </div>
+    <input type="tel" id="q-lentes-tel" class="q-input" placeholder="(11) 99999-9999" maxlength="15" inputmode="numeric">
+    <div id="q-lentes-tel-erro" class="q-status-msg" style="display:none;"></div>
+    <button class="q-opt q-opt-destaque" id="q-lentes-tel-ok" style="margin-top:16px;text-align:center;align-items:center;">
+        <span class="q-opt-t">Continuar</span></button>
+</div>
+
+<div id="q-step-lente-final">
+    <div class="q-passos"><i class="done"></i><i class="done"></i><i class="done"></i><i class="on"></i></div>
+    <span class="q-section-label" id="q-lente-titulo">Sua receita</span>
+
+    <div id="q-banner-ia" class="q-banner-ia" hidden></div>
+
+    <div id="q-form-receita">
+        <div class="q-olho"><span class="q-olho-tag">Olho direito (OD)</span>
+            <div class="q-olho-campos">
+                <label>Esf&eacute;rico<select data-r="odEsf"></select></label>
+                <label>Cil&iacute;ndrico<select data-r="odCil"></select></label>
+                <label>Eixo<select data-r="odEixo"></select></label>
+            </div></div>
+        <div class="q-olho"><span class="q-olho-tag">Olho esquerdo (OE)</span>
+            <div class="q-olho-campos">
+                <label>Esf&eacute;rico<select data-r="oeEsf"></select></label>
+                <label>Cil&iacute;ndrico<select data-r="oeCil"></select></label>
+                <label>Eixo<select data-r="oeEixo"></select></label>
+            </div></div>
+        <div class="q-olho" id="q-bloco-adicao">
+            <span class="q-olho-tag" id="q-adicao-tag">Adi&ccedil;&atilde;o &mdash; o grau de perto</span>
+            <div class="q-olho-campos" style="grid-template-columns:1fr;">
+                <label>Adi&ccedil;&atilde;o<select data-r="adicao"></select></label>
+            </div>
+        </div>
+        <div id="q-aviso-campo" class="q-erro-leitura" hidden></div>
+        <button class="q-btn-black" id="q-ver-lente" style="margin-top:6px;">VER MINHA LENTE</button>
+    </div>
+
+    <div id="q-resultado-lente" hidden>
+        <div id="q-card-lente" class="q-card-lente"></div>
+        <div id="q-alternativas"></div>
+        <div id="q-resumo-lente" class="q-resumo"></div>
+        <label id="q-aceite-box" class="q-aceite" hidden>
+            <input type="checkbox" id="q-aceite">
+            <span>Voc&ecirc; pode escolher suas lentes agora e enviar a receita depois pelo WhatsApp. Confirmaremos o &iacute;ndice e o valor ap&oacute;s conferir seu grau. Qualquer mudan&ccedil;a ser&aacute; combinada com voc&ecirc;. <b>Entendi e concordo.</b></span>
+        </label>
+        <button class="q-btn-black" id="q-add-lente">COMPRAR ARMA&Ccedil;&Atilde;O + LENTE</button>
+        <button class="q-btn-outline" id="q-so-armacao" data-carrinho="sem" style="margin-top:9px;">COMPRAR SOMENTE A ARMA&Ccedil;&Atilde;O</button>
+        <button class="q-btn-wa" id="q-wa-receita" hidden>&#128172; ENVIAR MINHA RECEITA PELO WHATSAPP</button>
+    </div>
+
+    <a class="q-voltar" data-ir="q-step-upload">voltar</a>
+</div>
 
                 </div>
                 <a href="https://provoulevou.com.br?utm_source=widget&utm_medium=lojista&utm_campaign=sirena" target="_blank" class="q-powered-footer">
@@ -2042,4 +2348,2069 @@ const fd = new FormData();
         else init();
     }
 
+})();
+
+/* ==========================================================================
+   ESCOLHER LENTES — Ótica Sirena. Regras do "Guia do aplicativo" do lojista
+   (fluxograma-completo-lentes-sirena2.pdf, catálogo Nuvemshop de 18/09/2026).
+
+   - 52 lentes (31 monofocais + 21 multifocais), todas pelo ID de PRODUTO.
+     As lentes estão DESPUBLICADAS na loja, mas o POST /comprar/ aceita (testado 29/09).
+   - Cada lente carrega a grade de fabricação do PDF (faixas ESF + CIL indivisíveis).
+     Os DOIS olhos precisam caber no MESMO produto; não se faz média entre olhos.
+   - 1.59 (Resistente/policarbonato) só aparece quando a armação é Balgriff.
+   - Tabela aprovada (p. 3) só vale para monofocal NEGATIVA sem astigmatismo;
+     o resto (astigmatismo, positivo, multifocal) mostra "opção compatível, sujeita à avaliação".
+   - Sem receita: lente provisória (p. 16), com aceite; a receita vai depois pelo WhatsApp.
+   ========================================================================== */
+const LENTES = [
+ {
+  "id": "364561041",
+  "nome": "Lentes de Grau Monofocais Conforto 1.56 - Antirreflexo",
+  "preco": 129.0,
+  "precoDe": 150.0,
+  "img": "https://acdn-us.mitiendanube.com/stores/002/439/162/products/grau-leve-ate-275-8f4f9232760598a15c17901773139034-1024-1024.png",
+  "visao": "mono",
+  "trat": "A",
+  "indice": "1.56",
+  "familia": "Conforto",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561055",
+  "nome": "Lentes de Grau Monofocais Conforto 1.56 - Antirreflexo - Cil. Est.",
+  "preco": 169.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "A",
+  "indice": "1.56",
+  "familia": "Conforto",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561088",
+  "nome": "Lentes de Grau Monofocais Resistente 1.59 - Antirreflexo",
+  "preco": 179.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "A",
+  "indice": "1.59",
+  "familia": "Resistente",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561093",
+  "nome": "Lentes de Grau Monofocais Resistente 1.59 - Antirreflexo - Cil. Est.",
+  "preco": 259.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "A",
+  "indice": "1.59",
+  "familia": "Resistente",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561119",
+  "nome": "Lentes de Grau Monofocais Fina 1.61 - Antirreflexo",
+  "preco": 269.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "A",
+  "indice": "1.61",
+  "familia": "Fina",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 4,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561123",
+  "nome": "Lentes de Grau Monofocais Fina 1.61 - Antirreflexo - Cil. Est.",
+  "preco": 329.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "A",
+  "indice": "1.61",
+  "familia": "Fina",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 4,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561131",
+  "nome": "Lentes de Grau Monofocais Ultrafina 1.67 - Antirreflexo",
+  "preco": 479.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "A",
+  "indice": "1.67",
+  "familia": "Ultrafina",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -10,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561135",
+  "nome": "Lentes de Grau Monofocais Ultrafina 1.67 - Antirreflexo - Cil. Est.",
+  "preco": 559.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "A",
+  "indice": "1.67",
+  "familia": "Ultrafina",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -8,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": -10,
+    "esfMax": -8.25,
+    "cilMin": 2.25,
+    "cilMax": 3
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561058",
+  "nome": "Lentes de Grau Monofocais Conforto 1.56 - Proteção Digital + Antirreflexo",
+  "preco": 199.0,
+  "precoDe": 250.0,
+  "img": "https://acdn-us.mitiendanube.com/stores/002/439/162/products/grau-leve-ate-275-34c67631564953e2af17901773301831-1024-1024.png",
+  "visao": "mono",
+  "trat": "AB",
+  "indice": "1.56",
+  "familia": "Conforto",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561063",
+  "nome": "Lentes de Grau Monofocais Conforto 1.56 - Proteção Digital + Antirreflexo - Cil. Est.",
+  "preco": 259.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AB",
+  "indice": "1.56",
+  "familia": "Conforto",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561066",
+  "nome": "Lentes de Grau Monofocais Conforto 1.56 - Proteção Digital + Antirreflexo - Super Cil.",
+  "preco": 379.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AB",
+  "indice": "1.56",
+  "familia": "Conforto",
+  "cilEst": false,
+  "superCil": true,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 4.25,
+    "cilMax": 6
+   }
+  ]
+ },
+ {
+  "id": "364561097",
+  "nome": "Lentes de Grau Monofocais Resistente 1.59 - Proteção Digital + Antirreflexo",
+  "preco": 229.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AB",
+  "indice": "1.59",
+  "familia": "Resistente",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561101",
+  "nome": "Lentes de Grau Monofocais Resistente 1.59 - Proteção Digital + Antirreflexo - Cil. Est.",
+  "preco": 389.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AB",
+  "indice": "1.59",
+  "familia": "Resistente",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561126",
+  "nome": "Lentes de Grau Monofocais Fina 1.61 - Proteção Digital + Antirreflexo",
+  "preco": 349.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AB",
+  "indice": "1.61",
+  "familia": "Fina",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 4,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561128",
+  "nome": "Lentes de Grau Monofocais Fina 1.61 - Proteção Digital + Antirreflexo - Cil. Est.",
+  "preco": 419.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AB",
+  "indice": "1.61",
+  "familia": "Fina",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 4,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561138",
+  "nome": "Lentes de Grau Monofocais Ultrafina 1.67 - Proteção Digital + Antirreflexo",
+  "preco": 599.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AB",
+  "indice": "1.67",
+  "familia": "Ultrafina",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -10,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561144",
+  "nome": "Lentes de Grau Monofocais Ultrafina 1.67 - Proteção Digital + Antirreflexo - Cil. Est.",
+  "preco": 669.9,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AB",
+  "indice": "1.67",
+  "familia": "Ultrafina",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -8,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": -10,
+    "esfMax": -8.25,
+    "cilMin": 2.25,
+    "cilMax": 3
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561163",
+  "nome": "Lentes de Grau Monofocais Extra Ultrafina 1.74 - Proteção Digital + Antirreflexo",
+  "preco": 990.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AB",
+  "indice": "1.74",
+  "familia": "Extra Ultrafina",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -13,
+    "esfMax": -1,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": -15,
+    "esfMax": -13.25,
+    "cilMin": 0,
+    "cilMax": 0
+   }
+  ]
+ },
+ {
+  "id": "364561167",
+  "nome": "Lentes de Grau Monofocais Extra Ultrafina 1.74 - Proteção Digital + Antirreflexo - Cil. Est.",
+  "preco": 1190.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AB",
+  "indice": "1.74",
+  "familia": "Extra Ultrafina",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -10,
+    "esfMax": -1,
+    "cilMin": 2.25,
+    "cilMax": 3
+   }
+  ]
+ },
+ {
+  "id": "364561068",
+  "nome": "Lentes de Grau Monofocais Conforto 1.56 - Fotossensível + Antirreflexo",
+  "preco": 279.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AF",
+  "indice": "1.56",
+  "familia": "Conforto",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -4,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 4,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561072",
+  "nome": "Lentes de Grau Monofocais Conforto 1.56 - Fotossensível + Antirreflexo - Cil. Est.",
+  "preco": 349.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AF",
+  "indice": "1.56",
+  "familia": "Conforto",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -4,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 4,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561107",
+  "nome": "Lentes de Grau Monofocais Resistente 1.59 - Fotossensível + Antirreflexo",
+  "preco": 389.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AF",
+  "indice": "1.59",
+  "familia": "Resistente",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -4,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 4,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561109",
+  "nome": "Lentes de Grau Monofocais Resistente 1.59 - Fotossensível + Antirreflexo - Cil. Est.",
+  "preco": 559.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AF",
+  "indice": "1.59",
+  "familia": "Resistente",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -4,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 4,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561146",
+  "nome": "Lentes de Grau Monofocais Ultrafina 1.67 - Fotossensível + Antirreflexo",
+  "preco": 879.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AF",
+  "indice": "1.67",
+  "familia": "Ultrafina",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -10,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561149",
+  "nome": "Lentes de Grau Monofocais Ultrafina 1.67 - Fotossensível + Antirreflexo - Cil. Est.",
+  "preco": 979.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "AF",
+  "indice": "1.67",
+  "familia": "Ultrafina",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -8,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": -10,
+    "esfMax": -8.25,
+    "cilMin": 2.25,
+    "cilMax": 3
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561076",
+  "nome": "Lentes de Grau Monofocais Conforto 1.56 - Proteção Digital + Fotossensível + Antirreflexo",
+  "preco": 339.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "ABF",
+  "indice": "1.56",
+  "familia": "Conforto",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -4,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 4,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561083",
+  "nome": "Lentes de Grau Monofocais Conforto 1.56 - Proteção Digital + Fotossensível + Antirreflexo - Cil. Est.",
+  "preco": 439.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "ABF",
+  "indice": "1.56",
+  "familia": "Conforto",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -4,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 4,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561113",
+  "nome": "Lentes de Grau Monofocais Resistente 1.59 - Proteção Digital + Fotossensível + Antirreflexo",
+  "preco": 479.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "ABF",
+  "indice": "1.59",
+  "familia": "Resistente",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -4,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 4,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561116",
+  "nome": "Lentes de Grau Monofocais Resistente 1.59 - Proteção Digital + Fotossensível + Antirreflexo - Cil. Est.",
+  "preco": 729.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "ABF",
+  "indice": "1.59",
+  "familia": "Resistente",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -4,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 4,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "364561154",
+  "nome": "Lentes de Grau Monofocais Ultrafina 1.67 - Proteção Digital + Fotossensível + Antirreflexo",
+  "preco": 1109.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "ABF",
+  "indice": "1.67",
+  "familia": "Ultrafina",
+  "cilEst": false,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -10,
+    "esfMax": 0,
+    "cilMin": 0,
+    "cilMax": 2
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 2
+   }
+  ]
+ },
+ {
+  "id": "364561157",
+  "nome": "Lentes de Grau Monofocais Ultrafina 1.67 - Proteção Digital + Fotossensível + Antirreflexo - Cil. Est.",
+  "preco": 1239.0,
+  "precoDe": null,
+  "img": null,
+  "visao": "mono",
+  "trat": "ABF",
+  "indice": "1.67",
+  "familia": "Ultrafina",
+  "cilEst": true,
+  "superCil": false,
+  "faixas": [
+   {
+    "esfMin": -8,
+    "esfMax": 0,
+    "cilMin": 2.25,
+    "cilMax": 4
+   },
+   {
+    "esfMin": -10,
+    "esfMax": -8.25,
+    "cilMin": 2.25,
+    "cilMax": 3
+   },
+   {
+    "esfMin": 0.25,
+    "esfMax": 6,
+    "cilMin": 2.25,
+    "cilMax": 4
+   }
+  ]
+ },
+ {
+  "id": "367577638",
+  "nome": "Multifocais Go! 1.56 - Antirreflexo",
+  "preco": 489.0,
+  "precoDe": 959.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "A",
+  "indice": "1.56",
+  "linha": "Go",
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577641",
+  "nome": "Multifocais Go! 1.56 - Proteção Digital + Antirreflexo",
+  "preco": 589.0,
+  "precoDe": 1359.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "AB",
+  "indice": "1.56",
+  "linha": "Go",
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577646",
+  "nome": "Multifocais Go! 1.59 - Antirreflexo",
+  "preco": 689.0,
+  "precoDe": 1599.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "A",
+  "indice": "1.59",
+  "linha": "Go",
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577648",
+  "nome": "Multifocais Go! 1.59 - Proteção Digital + Antirreflexo",
+  "preco": 989.0,
+  "precoDe": 1999.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "AB",
+  "indice": "1.59",
+  "linha": "Go",
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577650",
+  "nome": "Multifocais Go! 1.67 - Antirreflexo",
+  "preco": 1489.0,
+  "precoDe": 2639.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "A",
+  "indice": "1.67",
+  "linha": "Go",
+  "faixas": [
+   {
+    "esfMin": -10,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577654",
+  "nome": "Multifocais Go! 1.67 - Proteção Digital + Antirreflexo",
+  "preco": 1639.0,
+  "precoDe": 3039.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "AB",
+  "indice": "1.67",
+  "linha": "Go",
+  "faixas": [
+   {
+    "esfMin": -10,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577657",
+  "nome": "Multifocais Go! 1.74 - Proteção Digital + Antirreflexo",
+  "preco": 1989.0,
+  "precoDe": 4559.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "AB",
+  "indice": "1.74",
+  "linha": "Go",
+  "faixas": [
+   {
+    "esfMin": -12,
+    "esfMax": 8,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577658",
+  "nome": "Multifocais Light 1.56 - Antirreflexo",
+  "preco": 689.0,
+  "precoDe": 1279.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "A",
+  "indice": "1.56",
+  "linha": "Light",
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577661",
+  "nome": "Multifocais Light 1.56 - Proteção Digital + Antirreflexo",
+  "preco": 789.0,
+  "precoDe": 1679.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "AB",
+  "indice": "1.56",
+  "linha": "Light",
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577664",
+  "nome": "Multifocais Light 1.59 - Antirreflexo",
+  "preco": 1039.0,
+  "precoDe": 1919.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "A",
+  "indice": "1.59",
+  "linha": "Light",
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577665",
+  "nome": "Multifocais Light 1.59 - Proteção Digital + Antirreflexo",
+  "preco": 1229.0,
+  "precoDe": 2319.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "AB",
+  "indice": "1.59",
+  "linha": "Light",
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577672",
+  "nome": "Multifocais Light 1.67 - Antirreflexo",
+  "preco": 1689.0,
+  "precoDe": 2959.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "A",
+  "indice": "1.67",
+  "linha": "Light",
+  "faixas": [
+   {
+    "esfMin": -10,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577675",
+  "nome": "Multifocais Light 1.67 - Proteção Digital + Antirreflexo",
+  "preco": 1889.0,
+  "precoDe": 3359.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "AB",
+  "indice": "1.67",
+  "linha": "Light",
+  "faixas": [
+   {
+    "esfMin": -10,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577678",
+  "nome": "Multifocais Light 1.74 - Proteção Digital + Antirreflexo",
+  "preco": 2439.0,
+  "precoDe": 4879.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "AB",
+  "indice": "1.74",
+  "linha": "Light",
+  "faixas": [
+   {
+    "esfMin": -12,
+    "esfMax": 8,
+    "cilMin": 0,
+    "cilMax": 4
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577680",
+  "nome": "Multifocais Smart 1.56 - Antirreflexo",
+  "preco": 959.0,
+  "precoDe": 1759.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "A",
+  "indice": "1.56",
+  "linha": "Smart",
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 6
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577685",
+  "nome": "Multifocais Smart 1.56 - Proteção Digital + Antirreflexo",
+  "preco": 1129.0,
+  "precoDe": 2159.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "AB",
+  "indice": "1.56",
+  "linha": "Smart",
+  "faixas": [
+   {
+    "esfMin": -6,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 6
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577690",
+  "nome": "Multifocais Smart 1.59 - Antirreflexo",
+  "preco": 1279.0,
+  "precoDe": 2399.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "A",
+  "indice": "1.59",
+  "linha": "Smart",
+  "faixas": [
+   {
+    "esfMin": -8,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 6
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577693",
+  "nome": "Multifocais Smart 1.59 - Proteção Digital + Antirreflexo",
+  "preco": 1429.0,
+  "precoDe": 2799.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "AB",
+  "indice": "1.59",
+  "linha": "Smart",
+  "faixas": [
+   {
+    "esfMin": -8,
+    "esfMax": 6,
+    "cilMin": 0,
+    "cilMax": 6
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577696",
+  "nome": "Multifocais Smart 1.67 - Antirreflexo",
+  "preco": 2089.0,
+  "precoDe": 3439.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "A",
+  "indice": "1.67",
+  "linha": "Smart",
+  "faixas": [
+   {
+    "esfMin": -12,
+    "esfMax": 9,
+    "cilMin": 0,
+    "cilMax": 8
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577702",
+  "nome": "Multifocais Smart 1.67 - Proteção Digital + Antirreflexo",
+  "preco": 2199.0,
+  "precoDe": 3839.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "AB",
+  "indice": "1.67",
+  "linha": "Smart",
+  "faixas": [
+   {
+    "esfMin": -12,
+    "esfMax": 9,
+    "cilMin": 0,
+    "cilMax": 8
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ },
+ {
+  "id": "367577706",
+  "nome": "Multifocais Smart 1.74 - Proteção Digital + Antirreflexo",
+  "preco": 2789.0,
+  "precoDe": 5359.0,
+  "img": null,
+  "visao": "multi",
+  "trat": "AB",
+  "indice": "1.74",
+  "linha": "Smart",
+  "faixas": [
+   {
+    "esfMin": -16,
+    "esfMax": 14,
+    "cilMin": 0,
+    "cilMax": 8
+   }
+  ],
+  "addMin": 0.75,
+  "addMax": 3.5
+ }
+];
+
+const L_ = function (id) { return LENTES.filter(function (l) { return l.id === id; })[0] || null; };
+
+/* Cilindro positivo -> transposição para cilindro negativo (a grade é em cil negativo).
+   Guarda o cil em módulo. Não usa esférico equivalente. */
+function normOlho(esf, cil, eixo) {
+  esf = Number(esf) || 0; cil = Number(cil) || 0;
+  if (cil > 0) { esf = esf + cil; cil = -cil; if (eixo != null) eixo = (Number(eixo) + 90) % 180; }
+  return { esf: Math.round(esf * 100) / 100, cil: Math.round(Math.abs(cil) * 100) / 100, eixo: eixo };
+}
+function cabeFaixa(o, f) {
+  return o.esf >= f.esfMin - 1e-9 && o.esf <= f.esfMax + 1e-9 && o.cil >= f.cilMin - 1e-9 && o.cil <= f.cilMax + 1e-9;
+}
+function serveOlho(l, o) { return l.faixas.some(function (f) { return cabeFaixa(o, f); }); }
+function serve(l, olhos, add) {
+  if (!olhos.every(function (o) { return serveOlho(l, o); })) return false;
+  if (l.visao === 'multi') { if (add == null || add < l.addMin - 1e-9 || add > l.addMax + 1e-9) return false; }
+  return true;
+}
+function permitida(l, balgriff) { return l.indice !== '1.59' || !!balgriff; }
+function porPreco(a, b) { return a.preco - b.preco; }
+
+/* Tabela aprovada (p. 3): monofocal, ESF negativo, CIL 0,00 nos dois olhos. pior = ESF mais negativo. */
+function tabelaAprovada(trat, pior) {
+  if (pior >= -2.75) return { A: ['364561041', 1], AB: ['364561058', 1], AF: ['364561068', 1], ABF: ['364561076', 1] }[trat];
+  if (pior >= -4.75) return {
+    A: ['364561119', 1], AB: ['364561126', 1],
+    // sem 1.61 fotossensível: 1.67 por lacuna de índice (avaliar); 1.56 até -4,00 como econômica avaliada
+    AF: ['364561146', 0, pior >= -4 ? '364561068' : null], ABF: ['364561154', 0, pior >= -4 ? '364561076' : null]
+  }[trat];
+  if (pior >= -6.75) return { A: ['364561131', 1], AB: ['364561138', 1], AF: ['364561146', 1], ABF: ['364561154', 1] }[trat];
+  return { A: ['364561131', 0], AB: ['364561163', 1], AF: ['364561146', 0], ABF: ['364561154', 0] }[trat];
+}
+
+const SELO = {
+  ideal: 'Indicada para o seu grau',
+  avaliar: 'Opção compatível, sujeita à avaliação',
+  econ: 'Alternativa econômica, sujeita à avaliação',
+  balgriff: 'Opção para armação Balgriff: policarbonato 1.59',
+  provisoria: 'Opção inicial - valor sujeito à conferência da receita'
+};
+function op(l, selo) { return l ? { lente: l, selo: selo } : null; }
+
+/**
+ * e = { visao: 'mono'|'multi'|'semgrau', trat: 'A'|'AB'|'AF'|'ABF', receita: {...}|null,
+ *       balgriff: bool, uso: 'longe'|'perto'|null }
+ * @returns {tipo, opcoes:[{lente, selo}]} | {atendimento: motivo} | {plano:true} | {tipo:'outro_trat', opcoes}
+ */
+function recomendarSirena(e) {
+  var bal = !!e.balgriff;
+  if (e.visao === 'semgrau') {
+    if (bal) return { atendimento: 'balgriff_semgrau' };   // p. 15: exceção a validar -> atendimento
+    return { tipo: 'semgrau', opcoes: [op(L_('364561058'), 'Lente zerada (ESF / CIL 0,00) com proteção digital')] };
+  }
+  // SEM RECEITA: produtos de partida (p. 16)
+  if (!e.receita) {
+    var ind = bal ? '1.59' : '1.56';
+    if (e.visao === 'mono') {
+      var base = bal ? { A: '364561088', AB: '364561097', AF: '364561107', ABF: '364561113' }
+                     : { A: '364561041', AB: '364561058', AF: '364561068', ABF: '364561076' };
+      return { tipo: 'provisoria', opcoes: [op(L_(base[e.trat]), SELO.provisoria)] };
+    }
+    var ops = ['Go', 'Light', 'Smart'].map(function (ln) {
+      return op(LENTES.filter(function (l) { return l.visao === 'multi' && l.linha === ln && l.indice === ind && l.trat === e.trat; })[0], SELO.provisoria);
+    }).filter(Boolean);
+    return { tipo: 'provisoria', opcoes: ops };
+  }
+
+  var r = e.receita;
+  var od = normOlho(r.odEsf, r.odCil, r.odEixo), oe = normOlho(r.oeEsf, r.oeCil, r.oeEixo);
+  var add = r.adicao != null ? Number(r.adicao) : null;
+  if (e.visao === 'mono' && e.uso === 'perto' && add) {   // monofocal de perto: ESF de perto = longe + adição
+    od = { esf: od.esf + add, cil: od.cil, eixo: od.eixo }; oe = { esf: oe.esf + add, cil: oe.cil, eixo: oe.eixo };
+  }
+  var olhos = [od, oe];
+
+  if (e.visao === 'multi') {
+    var ops2 = ['Go', 'Light', 'Smart'].map(function (ln) {
+      var c = LENTES.filter(function (l) {
+        return l.visao === 'multi' && l.linha === ln && l.trat === e.trat && permitida(l, bal) && serve(l, olhos, add);
+      }).sort(porPreco);
+      return op(c[0], SELO.avaliar);
+    }).filter(Boolean);
+    if (!ops2.length) return { atendimento: 'fora_grade', olhos: olhos };
+    return { tipo: 'multi', opcoes: ops2, olhos: olhos };
+  }
+
+  // MONOFOCAL
+  if (olhos.every(function (o) { return o.esf === 0 && o.cil === 0; })) return { plano: true };
+  var mono = LENTES.filter(function (l) { return l.visao === 'mono' && permitida(l, bal); });
+  var cands = mono.filter(function (l) { return l.trat === e.trat && serve(l, olhos); }).sort(porPreco);
+  if (!cands.length) {
+    var outras = mono.filter(function (l) { return serve(l, olhos); }).sort(porPreco).slice(0, 4);
+    if (outras.length) return { tipo: 'outro_trat', opcoes: outras.map(function (l) { return op(l, SELO.avaliar); }), olhos: olhos };
+    var doTrat = mono.filter(function (l) { return l.trat === e.trat; });
+    var cadaOlho = olhos.every(function (o) { return doTrat.some(function (l) { return serveOlho(l, o); }); });
+    return { atendimento: cadaOlho ? 'par_misto' : 'fora_grade', olhos: olhos };
+  }
+
+  var simples = olhos.every(function (o) { return o.cil === 0 && o.esf <= 0; });
+  var opcoes = [];
+  if (simples) {
+    var pior = Math.min(od.esf, oe.esf);
+    var t = tabelaAprovada(e.trat, pior);
+    var rec = t && cands.filter(function (l) { return l.id === t[0]; })[0];
+    if (rec) {
+      opcoes.push(op(rec, t[1] ? SELO.ideal : SELO.avaliar));
+      var econ = t[2] && cands.filter(function (l) { return l.id === t[2]; })[0];
+      if (econ) opcoes.push(op(econ, SELO.econ));
+    }
+  }
+  if (!opcoes.length) {
+    // astigmatismo / positivo / fora da tabela: compatíveis por preço, sem selo de ideal
+    cands.filter(function (l) { return l.indice !== '1.59'; }).slice(0, 3).forEach(function (l) { opcoes.push(op(l, SELO.avaliar)); });
+  }
+  if (bal) {
+    var p159 = cands.filter(function (l) { return l.indice === '1.59'; })[0];
+    if (p159) opcoes.push(op(p159, SELO.balgriff));
+  }
+  if (!opcoes.length) opcoes = cands.slice(0, 3).map(function (l) { return op(l, SELO.avaliar); });
+  return { tipo: simples ? 'tabela' : 'compat', opcoes: opcoes, olhos: olhos };
+}
+
+if (typeof window !== 'undefined') { window.LENTES = LENTES; window.recomendarSirena = recomendarSirena; }
+if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena, normOlho, serve }; }
+
+
+/* =====================================================================
+   ESCOLHER LENTES (Sirena) — controlador. Base: controlador da Koros,
+   com as regras do guia do lojista (4 entradas, tratamento antes da receita,
+   receita agora ou depois pelo WhatsApp, 1.59 só Balgriff).
+   Rastreia cada passo em pl-lentes-step (mesmo funil das outras lojas).
+   ===================================================================== */
+(function () {
+    if (window.__PL_LENTES_LOADED__) return;
+    window.__PL_LENTES_LOADED__ = true;
+
+    var WHATSAPP_LOJA = '5519996618739';   // WhatsApp da Sirena (rodapé do site)
+    var WEBHOOK_RECEITA = 'https://n8n.segredosdodrop.com/webhook/pl-ler-receita';
+    var WEBHOOK_STEP = 'https://n8n.segredosdodrop.com/webhook/pl-lentes-step';
+
+    var $ = function (s) { return document.querySelector(s); };
+    var $$ = function (s) { return [].slice.call(document.querySelectorAll(s)); };
+    var brl = function (v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); };
+
+    var st = { visao: null, trat: null, receita: null, uso: null, lente: null, rec: null, ultimo: 'abriu' };
+
+    /* So armacao de GRAU tem fluxo de lente (sol, estojo e as proprias lentes nao). */
+    function nomeProduto() {
+        return ((document.getElementById('q-result-prodname') || {}).textContent
+            || (document.querySelector('h1.js-product-name,h1.product-title,h1') || {}).innerText || document.title || '').trim();
+    }
+    function ehArmacaoDeGrau() {
+        var n = (document.querySelector('h1.js-product-name,h1.product-title,h1') || {}).innerText || '';
+        return /de\s+grau/i.test(n) && !/estojo|lentes?\s+de\s+grau|clip\s*-?\s*on/i.test(n);
+    }
+    function ehBalgriff() { return /balgriff/i.test(nomeProduto()); }
+
+    /* ---------- rastreamento (fire-and-forget) ---------- */
+    function plSid() {
+        try {
+            var s = localStorage.getItem('pl_sid');
+            if (!s) { s = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); localStorage.setItem('pl_sid', s); }
+            return s;
+        } catch (e) { return 'nostore'; }
+    }
+    function track(step, detail) {
+        st.ultimo = step;
+        try {
+            var tel = (document.getElementById('q-phone') || {}).value || '';
+            fetch(WEBHOOK_STEP, {
+                method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    session_id: plSid(), origin: location.origin, telefone: tel,
+                    step: step, produto: nomeProduto().slice(0, 180), detail: detail || {}
+                })
+            }).catch(function () { });
+        } catch (e) { }
+    }
+
+    var TELAS = ['q-step-lentes', 'q-step-receita', 'q-step-upload', 'q-step-uso', 'q-step-lentes-tel', 'q-step-lente-final'];
+    function ir(id) {
+        TELAS.forEach(function (t) { var el = document.getElementById(t); if (el) el.style.display = 'none'; });
+        var res = document.getElementById('q-step-result'); if (res) res.style.display = 'none';
+        var alvo = document.getElementById(id);
+        if (alvo) alvo.style.display = 'flex';
+        var sc = $('.q-content-scroll'); if (sc) sc.scrollTop = 0;
+    }
+    function _vigiaProvador() {
+        var foto = document.getElementById('q-step-photo');
+        if (!foto) return;
+        var esconde = function () {
+            if (foto.style.display === 'none') return;
+            TELAS.forEach(function (t) { var el = document.getElementById(t); if (el) el.style.display = 'none'; });
+        };
+        new MutationObserver(esconde).observe(foto, { attributes: true, attributeFilter: ['style'] });
+        esconde();
+    }
+    function voltarResultado() {
+        TELAS.forEach(function (t) { var el = document.getElementById(t); if (el) el.style.display = 'none'; });
+        var res = document.getElementById('q-step-result'); if (res) res.style.display = 'flex';
+    }
+
+    /* multifocal tem so 2 tratamentos (sem fotossensivel no catalogo) */
+    function pintarTratamentos() {
+        $$('#q-step-receita [data-trat]').forEach(function (b) {
+            b.style.display = (st.visao === 'multi' && b.getAttribute('data-so-mono')) ? 'none' : 'flex';
+        });
+    }
+
+    /* ---------- selects da receita ---------- */
+    function faixa(de, ate, passo) {
+        var o = ['<option value="">—</option>'];
+        for (var v = de; v <= ate + 0.001; v += passo) {
+            var s = (v > 0 ? '+' : '') + v.toFixed(2).replace('.', ',');
+            o.push('<option value="' + v.toFixed(2) + '">' + s + '</option>');
+        }
+        return o.join('');
+    }
+    function popular() {
+        $$('[data-r$="Esf"]').forEach(function (s) { s.innerHTML = faixa(-16, 14, 0.25); });
+        // cilindro negativo e positivo: a receita pode vir em cil positivo (transpomos no motor)
+        $$('[data-r$="Cil"]').forEach(function (s) { s.innerHTML = faixa(-8, 6, 0.25); s.value = '0.00'; });
+        $$('[data-r="odEixo"],[data-r="oeEixo"]').forEach(function (s) {
+            var o = ['<option value="">—</option>'];
+            for (var v = 0; v <= 180; v++) o.push('<option value="' + v + '">' + v + '°</option>');
+            s.innerHTML = o.join('');
+        });
+        var ad = $('[data-r="adicao"]'); if (ad) ad.innerHTML = faixa(0.75, 3.50, 0.25);
+    }
+    function ajustarAdicao() {
+        var tag = $('#q-adicao-tag');
+        if (tag) tag.innerHTML = st.visao === 'multi' ? 'Adi&ccedil;&atilde;o &mdash; o grau de perto'
+            : 'Adi&ccedil;&atilde;o &mdash; s&oacute; se estiver na receita';
+    }
+    function limparReceita() { $$('[data-r]').forEach(function (s) { s.value = /Cil$/.test(s.dataset.r) ? '0.00' : ''; }); }
+    function avisar(msg) { var el = $('#q-aviso-campo'); el.textContent = msg; el.hidden = false; el.scrollIntoView({ block: 'nearest' }); }
+
+    /* Campo ausente: nao inventa. Esferico dos dois olhos e obrigatorio; eixo e obrigatorio com cilindro. */
+    function lerCampos() {
+        var g = function (k) { var el = $('[data-r="' + k + '"]'); return el && el.value !== '' ? Number(el.value) : null; };
+        var r = { odEsf: g('odEsf'), odCil: g('odCil') || 0, odEixo: g('odEixo'), oeEsf: g('oeEsf'), oeCil: g('oeCil') || 0, oeEixo: g('oeEixo'), adicao: g('adicao') };
+        if (r.odEsf === null || r.oeEsf === null) return { falta: 'esferico' };
+        if ((r.odCil && r.odEixo === null) || (r.oeCil && r.oeEixo === null)) return { falta: 'eixo' };
+        if (st.visao === 'multi' && r.adicao === null) return { falta: 'adicao' };
+        return { receita: r };
+    }
+
+    var TRAT_LABEL = { A: 'Antirreflexo', AB: 'Antirreflexo + luz azul', AF: 'Antirreflexo + fotossensível', ABF: 'Antirreflexo + fotossensível + luz azul' };
+    var VISAO_LABEL = { mono: 'Monofocal', multi: 'Multifocal', semgrau: 'Sem grau' };
+    var MOTIVO = {
+        fora_grade: 'Seu grau está fora da grade que fabricamos pronta no site.',
+        par_misto: 'Cada olho precisa de um tipo diferente de lente — a nossa ótica monta esse par pra você.',
+        balgriff_semgrau: 'Para a armação Balgriff sem grau, a nossa ótica confirma a montagem com você.'
+    };
+
+    function sinal(v) { return (v > 0 ? '+' : '') + Number(v).toFixed(2).replace('.', ','); }
+    function resumoDoGrau() {
+        var r = st.receita; if (!r) return '';
+        var olho = function (esf, cil, eixo) { return sinal(esf) + (Number(cil) ? ' ' + sinal(cil) + (eixo != null ? ' ' + eixo + '&deg;' : '') : ''); };
+        return '<div class="q-grau-anotado"><b>sua receita</b>' +
+            '<span>OD ' + olho(r.odEsf, r.odCil, r.odEixo) + '</span>' +
+            '<span>OE ' + olho(r.oeEsf, r.oeCil, r.oeEixo) + '</span>' +
+            (r.adicao != null ? '<span>Adição ' + sinal(r.adicao) + '</span>' : '') +
+            (st.uso ? '<span>Uso: ' + st.uso + '</span>' : '') + '</div>';
+    }
+
+    function textoLente(l) {
+        return l.visao === 'multi'
+            ? 'Multifocal ' + l.linha + ({ Go: ' · entrada', Light: ' · intermediária', Smart: ' · avançada' })[l.linha] + ' · índice ' + l.indice
+            : l.familia + ' ' + l.indice + (l.superCil ? ' · Super Cil.' : l.cilEst ? ' · Cil. Est.' : '');
+    }
+
+    function pintarCard(o) {
+        var l = o.lente;
+        $('#q-card-lente').innerHTML =
+            '<div class="q-card-lente-status">' + o.selo + '</div>' +
+            (l.img ? '<img class="q-lente-foto" src="' + l.img + '" alt="" decoding="async">' : '') +
+            '<div class="q-card-lente-nome">' + l.nome + '</div>' +
+            '<div class="q-card-lente-mat">' + textoLente(l) + '</div>' +
+            '<div class="q-card-lente-preco">' + (l.precoDe ? '<s class="q-preco-de">' + brl(l.precoDe) + '</s> ' : '') + brl(l.preco) + '</div>' +
+            '<div class="q-card-lente-parc">ou 6x de ' + brl(l.preco / 6) + ' sem juros</div>' +
+            '<div class="q-disclaimer">A nossa ótica <strong>confere a receita</strong> antes de liberar a produção.</div>';
+    }
+
+    function selecionar(o, idx) {
+        st.lente = o.lente;
+        pintarCard(o);
+        $$('.q-opt-lente').forEach(function (el) {
+            var on = Number(el.getAttribute('data-idx')) === idx;
+            el.classList.toggle('is-selected', on); el.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+        atualizarBotao();
+    }
+
+    function atualizarBotao() {
+        var add = $('#q-add-lente'); if (!add) return;
+        var prov = st.rec && st.rec.tipo === 'provisoria';
+        add.disabled = !st.lente || (prov && !$('#q-aceite').checked);
+    }
+
+    function mensagemWa(motivo) {
+        var r = st.receita;
+        var p = ['Olá! Estou vendo a armação ' + nomeProduto() + ' no site.'];
+        if (motivo === 'receita') p.push('Escolhi a lente ' + (st.lente ? st.lente.nome : '') + ' e vou enviar minha receita por aqui.');
+        else p.push('Quero ajuda para escolher a lente (' + (VISAO_LABEL[st.visao] || '') + (st.trat ? ', ' + TRAT_LABEL[st.trat] : '') + ').');
+        if (r) p.push('Receita: OD ' + sinal(r.odEsf) + ' ' + sinal(r.odCil) + (r.odEixo != null ? ' ' + r.odEixo + '°' : '') +
+            ' / OE ' + sinal(r.oeEsf) + ' ' + sinal(r.oeCil) + (r.oeEixo != null ? ' ' + r.oeEixo + '°' : '') +
+            (r.adicao != null ? ' / Adição ' + sinal(r.adicao) : ''));
+        return 'https://wa.me/' + WHATSAPP_LOJA + '?text=' + encodeURIComponent(p.join('\n'));
+    }
+
+    function mostrarResultado(rec) {
+        st.rec = rec; st.lente = null;
+        var add = $('#q-add-lente'), so = $('#q-so-armacao'), wa = $('#q-wa-receita'), alt = $('#q-alternativas');
+        var aceite = $('#q-aceite-box'); $('#q-aceite').checked = false; aceite.hidden = true;
+        wa.hidden = true; alt.innerHTML = ''; so.style.display = 'flex';
+        add.style.display = 'flex'; add.disabled = false;
+
+        if (rec.plano) {
+            $('#q-card-lente').innerHTML = '<div class="q-card-lente-nome">Seus dois olhos estão sem grau</div>' +
+                '<div class="q-card-lente-mat">Para esses óculos, o caminho certo é a lente sem grau com filtro de luz azul.</div>';
+            $('#q-resumo-lente').textContent = '';
+            add.textContent = 'VER LENTE SEM GRAU'; add.setAttribute('data-acao', 'semgrau');
+            track('recomendou', { plano: true, grau: st.receita });
+        } else if (rec.atendimento) {
+            $('#q-card-lente').innerHTML = '<div class="q-card-lente-nome">Vamos montar sua lente com você</div>' +
+                '<div class="q-card-lente-mat">' + (MOTIVO[rec.atendimento] || MOTIVO.fora_grade) + '</div>' +
+                '<div class="q-card-lente-pq"><b>o que acontece agora</b>Fale com a nossa ótica no WhatsApp — ' +
+                '<strong>já mandamos sua escolha junto</strong> — ou leve só a armação.</div>' + resumoDoGrau();
+            $('#q-resumo-lente').textContent = '';
+            add.textContent = 'FALAR COM A ÓTICA NO WHATSAPP'; add.setAttribute('data-acao', 'whatsapp');
+            track('recomendou', { atendimento: rec.atendimento, visao: st.visao, trat: st.trat, grau: st.receita || null, balgriff: ehBalgriff() });
+        } else {
+            add.removeAttribute('data-acao');
+            add.textContent = 'COMPRAR ARMAÇÃO + LENTE';
+            var titulo = rec.tipo === 'outro_trat'
+                ? 'O tratamento escolhido não atende o seu grau. Estas opções atendem com outro tratamento — escolha uma:'
+                : rec.tipo === 'multi' ? 'Escolha o nível da sua multifocal'
+                : rec.opcoes.length > 1 ? 'Opções para você' : '';
+            alt.innerHTML = rec.opcoes.length > 1 || rec.tipo === 'outro_trat'
+                ? (titulo ? '<div class="q-alt-titulo">' + titulo + '</div>' : '') + rec.opcoes.map(function (o, i) {
+                    var l = o.lente;
+                    return '<button type="button" class="q-opt q-opt-lente" data-idx="' + i + '" aria-pressed="false">'
+                        + (l.img ? '<img class="q-opt-foto" src="' + l.img + '" alt="" loading="lazy">' : '')
+                        + '<span class="q-opt-txt"><span class="q-opt-t">' + textoLente(l) + ' &middot; ' + TRAT_LABEL[l.trat] + '</span>'
+                        + '<span class="q-opt-s">' + brl(l.preco) + ' &middot; ' + o.selo + '</span></span>'
+                        + '<span class="q-opt-selected">Selecionada</span></button>';
+                  }).join('')
+                : '';
+            if (rec.tipo === 'outro_trat') {
+                // precisa do aceite da troca: nada pre-selecionado
+                $('#q-card-lente').innerHTML = '<div class="q-card-lente-nome">Troca de tratamento</div>' +
+                    '<div class="q-card-lente-mat">Você escolheu ' + TRAT_LABEL[st.trat] + '. Selecione abaixo a opção que prefere.</div>';
+                add.disabled = true;
+            } else {
+                selecionar(rec.opcoes[0], 0);
+            }
+            if (rec.tipo === 'provisoria') {
+                aceite.hidden = false; wa.hidden = false;
+                atualizarBotao();
+            }
+            $('#q-resumo-lente').innerHTML = 'Você escolheu: ' + VISAO_LABEL[st.visao] +
+                (st.trat && st.visao !== 'semgrau' ? ' &middot; ' + TRAT_LABEL[st.trat] : '') +
+                (rec.tipo === 'provisoria' ? ' &middot; <strong>receita pendente</strong>' : '');
+            track('recomendou', {
+                tipo: rec.tipo, opcoes: rec.opcoes.map(function (o) { return o.lente.id; }),
+                lente: st.lente ? st.lente.nome : null, preco: st.lente ? st.lente.preco : null,
+                visao: st.visao, trat: st.trat, uso: st.uso, grau: st.receita || null, balgriff: ehBalgriff()
+            });
+        }
+        $('#q-form-receita').hidden = true;
+        $('#q-resultado-lente').hidden = false;
+        $('#q-lente-titulo').textContent = rec.tipo === 'provisoria' ? 'Sua lente (provisória)' : 'Sua lente';
+        ir('q-step-lente-final');
+    }
+
+    function recomendarAgora() {
+        mostrarResultado(window.recomendarSirena({ visao: st.visao, trat: st.trat, receita: st.receita, balgriff: ehBalgriff(), uso: st.uso }));
+    }
+
+    /* Receita lida/digitada: monofocal com adicao -> pergunta o uso (nunca infere pelo sinal) */
+    function seguirComReceita(r) {
+        st.receita = r; st.uso = null;
+        if (st.visao === 'mono' && r.adicao) { track('pergunta_uso', {}); ir('q-step-uso'); return; }
+        recomendarAgora();
+    }
+
+    /* ---------- WhatsApp: primeira etapa do fluxo ---------- */
+    var _telPendente = null;
+    function telAtual() {
+        var v = (document.getElementById('q-phone') || {}).value || '';
+        var d = v.replace(/[^0-9]/g, '');
+        if (d.length >= 10) return d;
+        try {
+            var g = localStorage.getItem('pl_last_phone') || '';
+            if (g.replace(/[^0-9]/g, '').length >= 10) return g.replace(/[^0-9]/g, '');
+        } catch (e) { }
+        return '';
+    }
+    function telValido(d) {
+        if (!/^\d{10,11}$/.test(d)) return 'Informe DDD + número';
+        if (!/^[1-9][1-9]/.test(d)) return 'DDD inválido';
+        if (d.length === 11 && d[2] !== '9') return 'Celular deve começar com 9 após o DDD';
+        if (/^(\d)\1+$/.test(d.length === 11 ? d.slice(3) : d.slice(2))) return 'Número não parece real';
+        return null;
+    }
+    function telMascara(d) {
+        d = d.slice(0, 11);
+        if (d.length <= 2) return d.length ? '(' + d : '';
+        var meio = d.length === 11 ? 7 : 6;
+        return '(' + d.slice(0, 2) + ') ' + d.slice(2, meio) + (d.length > meio ? '-' + d.slice(meio) : '');
+    }
+    function telGuarda(d) {
+        var inp = document.getElementById('q-phone');
+        if (inp && !inp.value.replace(/[^0-9]/g, '')) inp.value = telMascara(d);
+        try { localStorage.setItem('pl_last_phone', d); } catch (e) { }
+    }
+    function pedeTelefone(depois) {
+        if (telAtual()) { depois(); return; }
+        _telPendente = depois;
+        var inp = document.getElementById('q-lentes-tel');
+        var err = document.getElementById('q-lentes-tel-erro');
+        if (err) err.style.display = 'none';
+        if (inp) inp.value = '';
+        track('pediu_telefone', {});
+        ir('q-step-lentes-tel');
+        if (inp) setTimeout(function () { try { inp.focus(); } catch (e) { } }, 250);
+    }
+    function wireTelefone() {
+        var inp = document.getElementById('q-lentes-tel');
+        var err = document.getElementById('q-lentes-tel-erro');
+        var ok = document.getElementById('q-lentes-tel-ok');
+        if (!inp || !ok) return;
+        inp.addEventListener('input', function () {
+            inp.value = telMascara(inp.value.replace(/[^0-9]/g, ''));
+            if (err) err.style.display = 'none';
+        });
+        inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); ok.click(); } });
+        ok.addEventListener('click', function (e) {
+            e.preventDefault();
+            var d = inp.value.replace(/[^0-9]/g, '');
+            var msg = telValido(d);
+            if (msg) { if (err) { err.textContent = msg; err.style.display = 'block'; } return; }
+            telGuarda(d);
+            track('telefone', { origem: 'fluxo_lentes' });
+            var f = _telPendente; _telPendente = null; if (f) f();
+        });
+    }
+
+    function abrirFormReceita(titulo, banner) {
+        $('#q-form-receita').hidden = false;
+        $('#q-aviso-campo').hidden = true;
+        ajustarAdicao();
+        $('#q-resultado-lente').hidden = true;
+        $('#q-lente-titulo').textContent = titulo;
+        var b = $('#q-banner-ia');
+        if (banner) { b.hidden = false; b.innerHTML = banner; } else { b.hidden = true; }
+        ir('q-step-lente-final');
+    }
+
+    /* ---------- carrinho ---------- */
+    function getProductForm() {
+        var f = document.querySelector('form[action*="carrinho"], form[action*="comprar"], form.js-product-form, form[data-store="product-form"]');
+        if (f && f.querySelector('input[name="add_to_cart"]')) return f;
+        var inp = document.querySelector('input[name="add_to_cart"]');
+        return inp ? inp.closest('form') : null;
+    }
+    function comprarArmacao() {
+        var src = getProductForm();
+        if (src) {
+            var clone = document.createElement('form');
+            clone.method = 'post';
+            clone.action = src.getAttribute('action') || '/comprar/';
+            clone.style.display = 'none';
+            src.querySelectorAll('input, select, textarea').forEach(function (el) {
+                if (!el.name) return;
+                if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) return;
+                var h = document.createElement('input');
+                h.type = 'hidden'; h.name = el.name; h.value = el.value;
+                clone.appendChild(h);
+            });
+            if (!clone.querySelector('[name="quantity"]')) {
+                var q = document.createElement('input'); q.type = 'hidden'; q.name = 'quantity'; q.value = '1'; clone.appendChild(q);
+            }
+            document.body.appendChild(clone); clone.submit(); return true;
+        }
+        var sb = document.querySelector('.js-addtocart, .btn-add-to-cart, [data-component="product.add-to-cart"]');
+        if (sb) { try { sb.click(); return true; } catch (e) { } }
+        return false;
+    }
+    /* add_to_cart usa o PRODUCT id (lente despublicada entra — testado 29/09/2026). */
+    function comprarComLente(lente) {
+        fetch('/comprar/', {
+            method: 'POST', credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'add_to_cart=' + encodeURIComponent(lente.id) + '&quantity=1'
+        }).then(function () { comprarArmacao(); }).catch(function () { comprarArmacao(); });
+    }
+    var _comprando = false;
+    function travarCompra(btn, texto) {
+        if (_comprando) return false;
+        _comprando = true;
+        ['#q-add-lente', '#q-so-armacao'].forEach(function (sel) { var b = $(sel); if (b) b.disabled = true; });
+        if (btn) btn.innerHTML = '<span class="q-add-spin"></span>' + (texto || 'Adicionando…');
+        setTimeout(function () {
+            if (!_comprando) return;
+            _comprando = false;
+            ['#q-add-lente', '#q-so-armacao'].forEach(function (sel) { var b = $(sel); if (b) b.disabled = false; });
+            if (btn) btn.textContent = 'Tentar de novo';
+        }, 12000);
+        return true;
+    }
+    function marcarCliqueCarrinho(comLente) {
+        try {
+            fetch('https://n8n.segredosdodrop.com/webhook/pl-provador-buy-click', {
+                method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    phone: (document.getElementById('q-phone') || {}).value || '', origin: location.origin, produto: nomeProduto(),
+                    fonte: 'fluxo_lentes', com_lente: !!comLente,
+                    lente: comLente && st.lente ? st.lente.nome : null,
+                    lente_preco: comLente && st.lente ? st.lente.preco : null
+                })
+            }).catch(function () {});
+        } catch (e) {}
+    }
+
+    /* ---------- cliques ---------- */
+    document.addEventListener('click', function (e) {
+        var t = e.target.closest('[data-ir],[data-visao],[data-trat],[data-receita],[data-uso],[data-carrinho],' +
+            '.q-opt-lente,#q-btn-escolher-lentes,#q-abrir-arquivo,#q-ver-lente,#q-add-lente,#q-wa-receita');
+        if (!t) return;
+
+        if (t.id === 'q-btn-escolher-lentes') { e.preventDefault(); track('abriu', { origem: 'provador' }); pedeTelefone(function () { ir('q-step-lentes'); }); return; }
+        if (t.dataset.ir) { e.preventDefault(); if (t.dataset.ir === 'q-step-result') voltarResultado(); else ir(t.dataset.ir); return; }
+
+        if (t.dataset.visao) {
+            e.preventDefault(); st.visao = t.dataset.visao; st.receita = null; st.uso = null;
+            track('visao', { visao: st.visao, balgriff: ehBalgriff() });
+            if (st.visao === 'semgrau') { st.trat = 'AB'; recomendarAgora(); }
+            else { pintarTratamentos(); ir('q-step-receita'); }
+            return;
+        }
+        if (t.dataset.trat) { e.preventDefault(); st.trat = t.dataset.trat; track('tratamento', { visao: st.visao, trat: st.trat }); ir('q-step-upload'); return; }
+
+        if (t.id === 'q-abrir-arquivo') { e.preventDefault(); track('receita_metodo', { metodo: 'enviar' }); $('#q-arquivo').click(); return; }
+        if (t.dataset.receita === 'digitar') { e.preventDefault(); track('receita_metodo', { metodo: 'digitar' }); limparReceita(); abrirFormReceita('Digite sua receita', null); return; }
+        if (t.dataset.receita === 'depois') {
+            e.preventDefault(); st.receita = null; st.uso = null;
+            track('receita_metodo', { metodo: 'whatsapp_depois' });
+            recomendarAgora(); return;
+        }
+        if (t.dataset.uso) { e.preventDefault(); st.uso = t.dataset.uso; track('uso', { uso: st.uso }); recomendarAgora(); return; }
+
+        if (t.id === 'q-ver-lente') {
+            e.preventDefault();
+            var r = lerCampos();
+            if (r.falta === 'esferico') { avisar('Preencha o esférico dos dois olhos.'); return; }
+            if (r.falta === 'eixo') { avisar('Com cilíndrico, o eixo também é obrigatório.'); return; }
+            if (r.falta === 'adicao') { avisar('Preencha a adição — ela é o grau de perto da multifocal.'); return; }
+            seguirComReceita(r.receita); return;
+        }
+
+        if (t.dataset.carrinho === 'sem') {
+            e.preventDefault();
+            if (!travarCompra(t.id === 'q-so-armacao' ? t : null, 'Adicionando…')) return;
+            marcarCliqueCarrinho(false);
+            track('so_armacao', { visao: st.visao }); comprarArmacao(); return;
+        }
+
+        if (t.classList && t.classList.contains('q-opt-lente')) {
+            e.preventDefault();
+            var i = Number(t.getAttribute('data-idx'));
+            var o = st.rec && st.rec.opcoes && st.rec.opcoes[i];
+            if (o) { selecionar(o, i); track('trocou_lente', { lente: o.lente.nome, preco: o.lente.preco }); }
+            return;
+        }
+
+        if (t.id === 'q-wa-receita') {
+            e.preventDefault(); track('wa_receita', { lente: st.lente ? st.lente.id : null });
+            window.open(mensagemWa('receita'), '_blank'); return;
+        }
+
+        if (t.id === 'q-add-lente') {
+            e.preventDefault();
+            var acao = t.getAttribute('data-acao');
+            if (acao === 'semgrau') { st.visao = 'semgrau'; st.trat = 'AB'; st.receita = null; recomendarAgora(); return; }
+            if (acao === 'whatsapp') { track('atendimento_whatsapp', { motivo: st.rec && st.rec.atendimento }); window.open(mensagemWa('ajuda'), '_blank'); return; }
+            if (!st.lente || t.disabled) return;
+            var prov = st.rec && st.rec.tipo === 'provisoria';
+            if (prov && !$('#q-aceite').checked) return;
+            if (!travarCompra(t, 'Adicionando…')) return;
+            marcarCliqueCarrinho(true);
+            track('carrinho', {
+                lente: st.lente.nome, lente_id: st.lente.id, preco: st.lente.preco, fase: 'armacao_mais_lente',
+                provisoria: !!prov, aceite: prov ? true : null, receita_pendente: !!prov,
+                grau: st.receita || null, uso: st.uso, visao: st.visao, trat: st.trat, balgriff: ehBalgriff()
+            });
+            comprarComLente(st.lente);
+            return;
+        }
+    });
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.id === 'q-aceite') { track('aceite_provisoria', { ok: e.target.checked }); atualizarBotao(); }
+    });
+
+    /* ---------- leitura REAL da receita (n8n -> Gemini vision) ---------- */
+    function encaixar(sel, valor) {
+        if (!sel || valor == null) return;
+        var opts = [].slice.call(sel.options).map(function (o) { return o.value; }).filter(function (v) { return v !== ''; });
+        var melhor = opts[0], dif = Infinity;
+        opts.forEach(function (o) { var d = Math.abs(Number(o) - Number(valor)); if (d < dif) { dif = d; melhor = o; } });
+        sel.value = melhor;
+    }
+    function wireArquivo() {
+        var inp = $('#q-arquivo'); if (!inp) return;
+        inp.addEventListener('change', function (e) { var f = e.target.files && e.target.files[0]; if (f) lerReceitaDoArquivo(f); inp.value = ''; });
+    }
+    function lerReceitaDoArquivo(file) {
+        $('#q-erro-leitura').hidden = true;
+        $('#q-lendo').hidden = false;
+        $('#q-arq-nome').textContent = file.name;
+        var th = $('#q-thumb');
+        if (/^image\//.test(file.type)) { th.src = URL.createObjectURL(file); th.hidden = false; th.onload = function () { URL.revokeObjectURL(th.src); }; }
+        else { th.hidden = true; }
+        var ext = (String(file.type || '').split('/')[1] || 'jpg').replace(/[^a-z0-9]/gi, '').slice(0, 5) || 'jpg';
+        var caminho = plSid() + '/' + Date.now() + '.' + ext;
+        var fr = new FileReader();
+        fr.onload = function () {
+            var b64 = String(fr.result).split(',')[1];
+            fetch(WEBHOOK_RECEITA, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: b64, mime: file.type || 'image/png', path: caminho }) })
+                .then(function (resp) { return resp.json(); })
+                .then(function (r) {
+                    if (!r.ok) { track('receita_lida', { ok: false, erro: r.erro }); falhaLeitura(r.erro === 'nao_e_receita' ? 'Não identifiquei uma receita nessa imagem.' : 'Não consegui ler sua receita.'); return; }
+                    var d = r.dados;
+                    limparReceita();
+                    encaixar($('[data-r="odEsf"]'), d.odEsf); encaixar($('[data-r="oeEsf"]'), d.oeEsf);
+                    encaixar($('[data-r="odCil"]'), d.odCil); encaixar($('[data-r="oeCil"]'), d.oeCil);
+                    if (d.adicao != null) encaixar($('[data-r="adicao"]'), d.adicao);
+                    if (d.odEixo != null) $('[data-r="odEixo"]').value = String(Math.round(d.odEixo));
+                    if (d.oeEixo != null) $('[data-r="oeEixo"]').value = String(Math.round(d.oeEixo));
+                    $('#q-lendo').hidden = true;
+                    track('receita_lida', { ok: true, confianca: d.confianca, arq: caminho });
+                    // a cliente sempre confere a transcricao antes de seguir
+                    abrirFormReceita('Confira sua receita', d.confianca === 'baixa'
+                        ? '&#9888;&#65039; A imagem ficou difícil de ler. <strong>Confira cada número com atenção.</strong>'
+                        : '&#10024; Preenchemos com o que lemos na sua receita. <strong>Confira e corrija se precisar.</strong>');
+                })
+                .catch(function () { track('receita_lida', { ok: false, erro: 'conexao' }); falhaLeitura('A leitura falhou — pode ser a conexão.'); });
+        };
+        fr.onerror = function () { falhaLeitura('Não consegui abrir o arquivo.'); };
+        fr.readAsDataURL(file);
+    }
+    function falhaLeitura(msg) {
+        $('#q-lendo').hidden = true;
+        var box = $('#q-erro-leitura');
+        box.innerHTML = msg + ' Tente outra foto ou <a data-receita="digitar">digite os dados</a>.';
+        box.hidden = false;
+    }
+
+    /* ---------- botao na tela de resultado do provador ---------- */
+    function revelarBotao() {
+        var buy = document.getElementById('q-btn-buy-now');
+        var lentes = document.getElementById('q-btn-escolher-lentes');
+        if (!buy || !lentes) return;
+        var visivel = buy.style.display && buy.style.display !== 'none';
+        lentes.style.display = visivel && ehArmacaoDeGrau() ? 'flex' : 'none';
+    }
+
+    /* ---------- botao "ESCOLHER LENTES E COMPRAR" na pagina do produto ---------- */
+    function abrirFluxoDoProduto(e) {
+        if (e) e.preventDefault();
+        var modal = document.getElementById('q-modal-ia'); if (modal) modal.style.display = 'flex';
+        try { document.body.style.overflow = 'hidden'; } catch (_) { }
+        ['q-step-photo', 'q-step-pix', 'q-step-error'].forEach(function (id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; });
+        st.ultimo = 'abriu';
+        track('abriu', { origem: 'botao_produto' });
+        pedeTelefone(function () { ir('q-step-lentes'); });
+    }
+    function _botaoLentes() {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'q-btn-lentes-produto';
+        b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" '
+            + 'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+            + '<circle cx="6" cy="14" r="3.4"/><circle cx="18" cy="14" r="3.4"/>'
+            + '<path d="M9.4 14c.6-1 1.5-1.5 2.6-1.5s2 .5 2.6 1.5"/>'
+            + '<path d="M2.6 14V11.6c0-.7.4-1.3 1-1.6"/><path d="M21.4 14V11.6c0-.7-.4-1.3-1-1.6"/>'
+            + '</svg><span>ESCOLHER LENTES E COMPRAR</span>';
+        b.addEventListener('click', abrirFluxoDoProduto);
+        return b;
+    }
+    function inserirBotaoProduto() {
+        if (!ehArmacaoDeGrau()) return true;   // sol/estojo: sem botao (e para de tentar)
+        var linhas = [];
+        var real = document.querySelector('#product_form [data-component="product.add-to-cart"], #product_form .js-addtocart:not(.js-scroll-to-form)');
+        var fixo = document.querySelector('.js-addtocart.js-scroll-to-form, .js-scroll-to-form.btn-add-to-cart');
+        [real, fixo].forEach(function (btn) {
+            if (!btn) return;
+            var linha = (btn.closest && btn.closest('.form-row')) || btn;
+            if (linha && linha.parentNode && linhas.indexOf(linha) === -1) linhas.push(linha);
+        });
+        if (!linhas.length) return false;
+        var linhaFixa = fixo ? ((fixo.closest && fixo.closest('.form-row')) || fixo) : null;
+        linhas.forEach(function (linha) {
+            if (!linha.getAttribute('data-pl-lentes')) {
+                linha.setAttribute('data-pl-lentes', '1');
+                var b = _botaoLentes();
+                if (linha === linhaFixa) b.classList.add('q-btn-lentes-compacto');
+                linha.parentNode.insertBefore(b, linha);
+            }
+            _igualaAltura(linha);
+        });
+        if (linhaFixa) {
+            var pv = linhaFixa.parentNode.querySelector('.q-btn-inline-provador:not(.q-btn-inline-provador-real)');
+            if (pv) pv.classList.add('q-btn-provador-compacto');
+        }
+        return true;
+    }
+    function _igualaAltura(linha) {
+        try {
+            var lentes = linha.previousElementSibling;
+            if (!lentes || !lentes.classList.contains('q-btn-lentes-produto')) return;
+            if (lentes.classList.contains('q-btn-lentes-compacto')) return;
+            var alvo = linha.querySelector('.js-addtocart, .btn-add-to-cart, [data-component="product.add-to-cart"]') || linha;
+            var h = Math.round(alvo.getBoundingClientRect().height);
+            if (h > 20) { lentes.style.height = h + 'px'; lentes.style.padding = '0 16px'; }
+        } catch (e) {}
+    }
+
+    function init() {
+        popular();
+        wireArquivo();
+        wireTelefone();
+        if (!inserirBotaoProduto()) {
+            var t = 0, iv = setInterval(function () { if (inserirBotaoProduto() || ++t > 20) clearInterval(iv); }, 300);
+        }
+        [600, 1800, 4000].forEach(function (ms) { setTimeout(inserirBotaoProduto, ms); });
+        _vigiaProvador();
+        var buy = document.getElementById('q-btn-buy-now');
+        if (buy) {
+            new MutationObserver(revelarBotao).observe(buy, { attributes: true, attributeFilter: ['style'] });
+            revelarBotao();
+        }
+        var close = document.getElementById('q-close-btn');
+        if (close) close.addEventListener('click', function () {
+            if (st.ultimo && st.ultimo !== 'abriu' && st.ultimo !== 'carrinho' && st.ultimo !== 'so_armacao')
+                track('saiu', { ultimo_step: st.ultimo });
+        });
+    }
+    var _tentativas = 0;
+    function bootstrap() {
+        if (document.getElementById('q-btn-escolher-lentes') && document.getElementById('q-arquivo')) { init(); return; }
+        if (_tentativas++ > 60) return;
+        setTimeout(bootstrap, 150);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootstrap);
+    else bootstrap();
 })();
