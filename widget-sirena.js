@@ -1106,10 +1106,6 @@
         <div id="q-card-lente" class="q-card-lente"></div>
         <div id="q-alternativas"></div>
         <div id="q-resumo-lente" class="q-resumo"></div>
-        <label id="q-aceite-box" class="q-aceite" hidden>
-            <input type="checkbox" id="q-aceite">
-            <span>Voc&ecirc; pode escolher suas lentes agora e enviar a receita depois pelo WhatsApp. Confirmaremos o &iacute;ndice e o valor ap&oacute;s conferir seu grau. Qualquer mudan&ccedil;a ser&aacute; combinada com voc&ecirc;. <b>Entendi e concordo.</b></span>
-        </label>
         <button class="q-btn-black" id="q-add-lente">COMPRAR ARMA&Ccedil;&Atilde;O + LENTE</button>
         <button class="q-btn-outline" id="q-so-armacao" data-carrinho="sem" style="margin-top:9px;">COMPRAR SOMENTE A ARMA&Ccedil;&Atilde;O</button>
         <button class="q-btn-wa" id="q-wa-receita" hidden>&#128172; ENVIAR MINHA RECEITA PELO WHATSAPP</button>
@@ -2362,7 +2358,7 @@ const fd = new FormData();
    - 1.59 (Resistente/policarbonato) só aparece quando a armação é Balgriff.
    - Tabela aprovada (p. 3) só vale para monofocal NEGATIVA sem astigmatismo;
      o resto (astigmatismo, positivo, multifocal) mostra "opção compatível, sujeita à avaliação".
-   - Sem receita: lente provisória (p. 16), com aceite; a receita vai depois pelo WhatsApp.
+   - Sem receita: lente provisória (p. 16); a receita vai depois pelo WhatsApp.
    ========================================================================== */
 const LENTES = [
  {
@@ -3964,7 +3960,7 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
     function atualizarBotao() {
         var add = $('#q-add-lente'); if (!add) return;
         var prov = st.rec && st.rec.tipo === 'provisoria';
-        add.disabled = !st.lente || (prov && !$('#q-aceite').checked);
+        add.disabled = !st.lente;
     }
 
     function mensagemWa(motivo) {
@@ -3981,7 +3977,6 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
     function mostrarResultado(rec) {
         st.rec = rec; st.lente = null;
         var add = $('#q-add-lente'), so = $('#q-so-armacao'), wa = $('#q-wa-receita'), alt = $('#q-alternativas');
-        var aceite = $('#q-aceite-box'); $('#q-aceite').checked = false; aceite.hidden = true;
         wa.hidden = true; alt.innerHTML = ''; so.style.display = 'flex';
         add.style.display = 'flex'; add.disabled = false;
 
@@ -4025,7 +4020,7 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
                 selecionar(rec.opcoes[0], 0);
             }
             if (rec.tipo === 'provisoria') {
-                aceite.hidden = false; wa.hidden = false;
+                wa.hidden = false;
                 atualizarBotao();
             }
             $('#q-resumo-lente').innerHTML = 'Você escolheu: ' + VISAO_LABEL[st.visao] +
@@ -4256,20 +4251,16 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
             if (acao === 'whatsapp') { track('atendimento_whatsapp', { motivo: st.rec && st.rec.atendimento }); window.open(mensagemWa('ajuda'), '_blank'); return; }
             if (!st.lente || t.disabled) return;
             var prov = st.rec && st.rec.tipo === 'provisoria';
-            if (prov && !$('#q-aceite').checked) return;
             if (!travarCompra(t, 'Adicionando…')) return;
             marcarCliqueCarrinho(true);
             track('carrinho', {
                 lente: st.lente.nome, lente_id: st.lente.id, preco: st.lente.preco, fase: 'armacao_mais_lente',
-                provisoria: !!prov, aceite: prov ? true : null, receita_pendente: !!prov,
+                provisoria: !!prov, receita_pendente: !!prov,
                 grau: st.receita || null, uso: st.uso, visao: st.visao, trat: st.trat, balgriff: ehBalgriff()
             });
             comprarComLente(st.lente);
             return;
         }
-    });
-    document.addEventListener('change', function (e) {
-        if (e.target && e.target.id === 'q-aceite') { track('aceite_provisoria', { ok: e.target.checked }); atualizarBotao(); }
     });
 
     /* ---------- leitura REAL da receita (n8n -> Gemini vision) ---------- */
