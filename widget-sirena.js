@@ -3935,7 +3935,7 @@ var PLLC = window.PLLC || (function () {
     }
     // Etapas editáveis pelo painel (com os padrões de hoje quando a loja não mexeu)
     function etapas() {
-        var e = { telefone: { ativo: true }, tratamento: { ativo: true, padrao: '' }, receita: { posicao: 'final' } };
+        var e = { telefone: { ativo: true }, tratamento: { ativo: true, padrao: '' }, receita: { posicao: 'final' }, uso: { ativo: true, padrao: 'longe' } };
         var s = (atual && atual.etapas) || {};
         Object.keys(e).forEach(function (k) { if (s[k] && typeof s[k] === 'object') for (var x in s[k]) e[k][x] = s[k][x]; });
         return e;
@@ -4464,7 +4464,11 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
     /* Receita lida/digitada: monofocal com adicao -> pergunta o uso (nunca infere pelo sinal) */
     function seguirComReceita(r) {
         st.receita = r; st.uso = null;
-        if (st.visao === 'mono' && r.adicao) { track('pergunta_uso', {}); ir('q-step-uso'); return; }
+        if (st.visao === 'mono' && r.adicao) {
+            var eu = PLLC.etapas().uso;
+            if (eu.ativo === false) { st.uso = eu.padrao === 'perto' ? 'perto' : 'longe'; track('uso', { uso: st.uso, padrao: true }); }   // loja desligou "longe ou perto": usa o padrão
+            else { track('pergunta_uso', {}); ir('q-step-uso'); return; }
+        }
         _plDepoisDaReceita(recomendarAgora);
     }
 
