@@ -4127,7 +4127,7 @@ var PLLC = window.PLLC || (function () {
                 try { api.reaplica(d.config); } catch (x) {}
                 try { if (api.atualizaTela) api.atualizaTela(); } catch (x) {}
                 marcaEditaveis();
-            } else if (d.type === 'pl-lentes-ir') { try { api.ir(String(d.etapa || '')); } catch (x) {} marcaEditaveis(); }
+            } else if (d.type === 'pl-lentes-ir') { try { api.ir(String(d.etapa || ''), d.sim || null); } catch (x) {} marcaEditaveis(); }
             else if (d.type === 'pl-lentes-modo') { _pvEditar = !!d.editar; marcaEditaveis(); }
         });
         document.addEventListener('input', function (e) {
@@ -4251,6 +4251,31 @@ window.PLLC = PLLC;
 
 PLLC.carregar().then(function (cfg) { PLLC.catalogo(LENTES, cfg); });
 if (typeof window !== 'undefined') window.recomendarSirena = PLLC.embrulha(window.recomendarSirena);   // lente desligada -> sem opção vazia
+/* Grade de indicação do painel (config.indicacao[visao]): faixa de grau × tratamento -> lentes escolhidas pela loja (13/10/2026).
+   Faixa = maior grau esférico (em módulo) entre os olhos + cilíndrico máximo. Sem grade, sem receita, armação de
+   policarbonato ou receita plana: segue a regra de sempre. Célula vazia / fora da grade: WhatsApp (ou a regra de sempre, se fora = 'auto'). */
+if (typeof window !== 'undefined') (function () {
+    var orig = window.recomendarSirena;
+    window.recomendarSirena = function (e) {
+        try {
+            var cfg = PLLC.cfgAtual(), gi = cfg && cfg.indicacao && cfg.indicacao[e.visao];
+            if (gi && Array.isArray(gi.faixas) && gi.faixas.length && e.receita && !(e.balgriff || e.policarbonato)) {
+                var r = e.receita, od = normOlho(r.odEsf, r.odCil, r.odEixo), oe = normOlho(r.oeEsf, r.oeCil, r.oeEixo);
+                var add = r.adicao != null ? Number(r.adicao) : null;
+                if (e.visao === 'mono' && e.uso === 'perto' && add) { od.esf += add; oe.esf += add; }
+                if (!(od.esf === 0 && od.cil === 0 && oe.esf === 0 && oe.cil === 0)) {
+                    var esf = Math.max(Math.abs(od.esf), Math.abs(oe.esf)), cil = Math.max(Math.abs(od.cil), Math.abs(oe.cil));
+                    var f = gi.faixas.filter(function (x) { return esf >= Number(x.de) - 1e-9 && esf <= Number(x.ate) + 1e-9 && cil <= Number(x.cil) + 1e-9; })[0];
+                    var ids = (f && f.cel && f.cel[e.trat]) || [];
+                    var ops = ids.map(function (id, i) { var l = L_(String(id)); return l ? op(l, i ? SELO.avaliar : SELO.ideal) : null; }).filter(Boolean);
+                    if (ops.length) return { tipo: e.visao === 'multi' && ops.length > 1 ? 'multi' : 'grade', opcoes: ops, olhos: [od, oe] };
+                    if (gi.fora !== 'auto') return { atendimento: 'fora_grade', olhos: [od, oe] };
+                }
+            }
+        } catch (x) {}
+        return orig(e);
+    };
+})();
 
 if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena, normOlho, serve }; }
 
@@ -5004,7 +5029,7 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
         PLLC.previa({
             nec: { attr: 'data-visao', t: '.q-opt-t', s: '.q-opt-s' },
             reaplica: function (cfg) { if (window.__plAplica) window.__plAplica(cfg); },
-            ir: function (et) {
+            ir: function (et, sim) {
                 var modal = document.getElementById('q-modal-ia'); if (modal) modal.style.display = 'flex';
                 ['q-step-photo', 'q-step-pix', 'q-step-error'].forEach(function (id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; });
                 var necs = ((PLLC.cfgAtual() || {}).necessidades || []), comGrau = null;
@@ -5021,6 +5046,12 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
                 if (et === 'tratamento') { if (!st.visao || st.visao === 'semgrau') st.visao = comGrau; _plPintaTrat(); return _irTela('q-step-receita'); }
                 if (et === 'receita') { if (typeof mostrarAdicao === 'function') mostrarAdicao(); return _irTela('q-step-upload'); }
                 if (et === 'uso') return _irTela('q-step-uso');
+                if (et === 'resultado' && sim && sim.receita) {   // teste de receita do painel: mostra a lente que o fluxo indicaria
+                    st.visao = sim.visao || comGrau; st.trat = sim.trat || 'A'; st.receita = sim.receita; st.uso = null; st.receitaOk = true;
+                    window.__PLLC_SEM_EXTRAS = true;
+                    try { recomendarAgora(); } finally { window.__PLLC_SEM_EXTRAS = false; }
+                    return;
+                }
                 if (et === 'resultado') {
                     st.visao = 'semgrau'; st.trat = 'AB'; st.receita = null;
                     window.__PLLC_SEM_EXTRAS = true;
