@@ -2280,15 +2280,27 @@ const fd = new FormData();
                             // demais fotos da galeria, menos as vinculadas a OUTRAS variantes (com certeza outra cor)
                             var resto = gal.filter(function (g, i) { return i !== ini && idxVar.indexOf(i) < 0 && grupo.indexOf(g) < 0; });
                             var cand = grupo.concat(resto).map(abs).slice(0, 10);
-                            // fotos com rosto: primeiro as do grupo, depois as da galeria (ate 3)
-                            var rostos = [];
+                                                        var rostos = [];
                             try {
-                                if (typeof getFaceDetector === 'function' && typeof _plLoadCorsImg === 'function' && typeof _plImgHasFace === 'function') {
-                                    var det = await getFaceDetector();
-                                    if (det) for (var ci = 0; ci < cand.length && rostos.length < 3; ci++) {
-                                        var cim = await _plLoadCorsImg(cand[ci]);
-                                        if (cim && await _plImgHasFace(det, cim)) rostos.push(cand[ci]);
-                                    }
+                                // detector proprio (mesmo do widget: nativo do navegador ou MediaPipe), cache em window
+                                var fdet = window.__plFVDet;
+                                if (fdet === undefined) {
+                                    fdet = null;
+                                    try {
+                                        if ('FaceDetector' in window) fdet = { native: new window.FaceDetector({ fastMode: true, maxDetectedFaces: 1 }) };
+                                        else {
+                                            var vision = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/vision_bundle.mjs');
+                                            var fileset = await vision.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm');
+                                            fdet = { mp: await vision.FaceDetector.createFromOptions(fileset, { baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite' }, runningMode: 'IMAGE' }) };
+                                        }
+                                    } catch (e) { fdet = null; }
+                                    window.__plFVDet = fdet;
+                                }
+                                var carrega = function (url) { return new Promise(function (res) { var im = new Image(); im.crossOrigin = 'anonymous'; im.onload = function () { res(im); }; im.onerror = function () { res(null); }; im.src = url; }); };
+                                var temRosto = async function (im) { try { if (fdet.native) { var f = await fdet.native.detect(im); return !!(f && f.length); } if (fdet.mp) { var r = fdet.mp.detect(im); return !!(r && r.detections && r.detections.length); } } catch (e) {} return false; };
+                                if (fdet) for (var ci = 0; ci < cand.length && rostos.length < 3; ci++) {
+                                    var cim = await carrega(cand[ci]);
+                                    if (cim && await temRosto(cim)) rostos.push(cand[ci]);
                                 }
                             } catch (e) {}
                             // ordem: rosto (principal) > variante > grupo > outros rostos > resto. O gerador filtra a cor
