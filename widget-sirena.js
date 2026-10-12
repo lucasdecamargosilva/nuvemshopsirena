@@ -2374,7 +2374,9 @@ const fd = new FormData();
      As lentes estão DESPUBLICADAS na loja, mas o POST /comprar/ aceita (testado 29/09).
    - Cada lente carrega a grade de fabricação do PDF (faixas ESF + CIL indivisíveis).
      Os DOIS olhos precisam caber no MESMO produto; não se faz média entre olhos.
-   - 1.59 (Resistente/policarbonato) só aparece quando a armação é Balgriff.
+   - 1.59 (Resistente/policarbonato) só aparece quando a armação pede policarbonato: Balgriff (pelo
+     nome) ou descrição do produto que recomenda policarbonato (ex.: Jennifer). Nessas armações o
+     fluxo SEMPRE recomenda a 1.59 que atende o grau (pedido do Lucas, 11/10/2026).
    - Tabela aprovada (p. 3) só vale para monofocal NEGATIVA sem astigmatismo;
      o resto (astigmatismo, positivo, multifocal) mostra "opção compatível, sujeita à avaliação".
    - Sem receita: lente provisória (p. 16); a receita vai depois pelo WhatsApp.
@@ -3710,17 +3712,25 @@ const SELO = {
   avaliar: 'Opção compatível, sujeita à avaliação',
   econ: 'Alternativa econômica, sujeita à avaliação',
   balgriff: 'Opção para armação Balgriff: policarbonato 1.59',
+  policarbonato: 'Recomendada para esta armação: policarbonato 1.59, mais resistente',
   provisoria: 'Opção inicial - valor sujeito à conferência da receita'
 };
 function op(l, selo) { return l ? { lente: l, selo: selo } : null; }
 
 /**
  * e = { visao: 'mono'|'multi'|'semgrau', trat: 'A'|'AB'|'AF'|'ABF', receita: {...}|null,
- *       balgriff: bool, uso: 'longe'|'perto'|null }
+ *       balgriff: bool, policarbonato: bool, uso: 'longe'|'perto'|null }
+ * policarbonato (ou balgriff) = a armação pede lente de policarbonato 1.59.
  * @returns {tipo, opcoes:[{lente, selo}]} | {atendimento: motivo} | {plano:true} | {tipo:'outro_trat', opcoes}
  */
 function recomendarSirena(e) {
-  var bal = !!e.balgriff;
+  var bal = !!e.balgriff || !!e.policarbonato;   // armação que pede policarbonato 1.59
+  // Dentro de uma lista, fica só com as 1.59 quando a armação pede policarbonato (se alguma servir).
+  function prefere159(lista) {
+    if (!bal) return lista;
+    var p = lista.filter(function (l) { return l.indice === '1.59'; });
+    return p.length ? p : lista;
+  }
   if (e.visao === 'semgrau') {
     if (bal) return { atendimento: 'balgriff_semgrau' };   // p. 15: exceção a validar -> atendimento
     return { tipo: 'semgrau', opcoes: [op(L_('364561058'), 'Lente zerada (ESF / CIL 0,00) com proteção digital')] };
@@ -3735,7 +3745,7 @@ function recomendarSirena(e) {
     }
     // multifocal: sempre a MAIS CARA do nivel (pedido do Lucas, 29/09/2026)
     var ops = ['Go', 'Light', 'Smart'].map(function (ln) {
-      return op(LENTES.filter(function (l) { return l.visao === 'multi' && l.linha === ln && l.trat === e.trat && permitida(l, bal); }).sort(porPreco).reverse()[0], SELO.provisoria);
+      return op(prefere159(LENTES.filter(function (l) { return l.visao === 'multi' && l.linha === ln && l.trat === e.trat && permitida(l, bal); })).sort(porPreco).reverse()[0], SELO.provisoria);
     }).filter(Boolean);
     return { tipo: 'provisoria', opcoes: ops };
   }
@@ -3750,10 +3760,10 @@ function recomendarSirena(e) {
 
   if (e.visao === 'multi') {
     var ops2 = ['Go', 'Light', 'Smart'].map(function (ln) {
-      var c = LENTES.filter(function (l) {
+      var c = prefere159(LENTES.filter(function (l) {
         return l.visao === 'multi' && l.linha === ln && l.trat === e.trat && permitida(l, bal) && serve(l, olhos, add);
-      }).sort(porPreco).reverse();   // sempre a MAIS CARA que atende (pedido do Lucas, 29/09/2026)
-      return op(c[0], SELO.avaliar);
+      })).sort(porPreco).reverse();   // sempre a MAIS CARA que atende (pedido do Lucas, 29/09/2026)
+      return op(c[0], bal && c[0] && c[0].indice === '1.59' ? SELO.policarbonato : SELO.avaliar);
     }).filter(Boolean);
     if (!ops2.length) return { atendimento: 'fora_grade', olhos: olhos };
     return { tipo: 'multi', opcoes: ops2, olhos: olhos };
@@ -3763,6 +3773,15 @@ function recomendarSirena(e) {
   if (olhos.every(function (o) { return o.esf === 0 && o.cil === 0; })) return { plano: true };
   var mono = LENTES.filter(function (l) { return l.visao === 'mono' && permitida(l, bal); });
   var cands = mono.filter(function (l) { return l.trat === e.trat && serve(l, olhos); }).sort(porPreco);
+  // Armação que pede policarbonato: recomenda SEMPRE a 1.59 que atende o grau (a mais barata que serve).
+  // Se o tratamento escolhido não tem 1.59 para esse grau, oferece as 1.59 de outro tratamento.
+  // Se nenhuma 1.59 atende o grau, segue a regra normal abaixo.
+  if (bal) {
+    var c159 = cands.filter(function (l) { return l.indice === '1.59'; });
+    if (c159.length) return { tipo: 'policarbonato', opcoes: [op(c159[0], SELO.policarbonato)], olhos: olhos };
+    var o159 = mono.filter(function (l) { return l.indice === '1.59' && serve(l, olhos); }).sort(porPreco).slice(0, 4);
+    if (o159.length) return { tipo: 'outro_trat', opcoes: o159.map(function (l) { return op(l, SELO.policarbonato); }), olhos: olhos };
+  }
   if (!cands.length) {
     var outras = mono.filter(function (l) { return serve(l, olhos); }).sort(porPreco).slice(0, 4);
     if (outras.length) return { tipo: 'outro_trat', opcoes: outras.map(function (l) { return op(l, SELO.avaliar); }), olhos: olhos };
@@ -3786,10 +3805,6 @@ function recomendarSirena(e) {
   if (!opcoes.length) {
     // astigmatismo / positivo / fora da tabela: compatíveis por preço, sem selo de ideal
     cands.filter(function (l) { return l.indice !== '1.59'; }).slice(0, 3).forEach(function (l) { opcoes.push(op(l, SELO.avaliar)); });
-  }
-  if (bal) {
-    var p159 = cands.filter(function (l) { return l.indice === '1.59'; })[0];
-    if (p159) opcoes.push(op(p159, SELO.balgriff));
   }
   if (!opcoes.length) opcoes = cands.slice(0, 3).map(function (l) { return op(l, SELO.avaliar); });
   return { tipo: simples ? 'tabela' : 'compat', opcoes: opcoes, olhos: olhos };
@@ -3839,6 +3854,12 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
         return /de\s+grau/i.test(n) && !/estojo|lentes?\s+de\s+grau|clip\s*-?\s*on/i.test(n);
     }
     function ehBalgriff() { return /balgriff/i.test(nomeProduto()); }
+    /* Armação que pede policarbonato: Balgriff, ou a descrição do produto recomenda policarbonato
+       (ex.: Jennifer: "Recomenda-se lentes em policarbonato..."). 11/10/2026 */
+    function pedePolicarbonato() {
+        var d = (document.querySelector('.js-product-description, [data-store^="product-description"]') || {}).textContent || '';
+        return ehBalgriff() || /policarbonato/i.test(d);
+    }
 
     /* ---------- rastreamento (fire-and-forget) ---------- */
     function plSid() {
@@ -3935,7 +3956,7 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
     var MOTIVO = {
         fora_grade: 'Seu grau está fora da grade que fabricamos pronta no site.',
         par_misto: 'Cada olho precisa de um tipo diferente de lente — a nossa ótica monta esse par pra você.',
-        balgriff_semgrau: 'Para a armação Balgriff sem grau, a nossa ótica confirma a montagem com você.'
+        balgriff_semgrau: 'Esta armação pede lente de policarbonato. Para a versão sem grau, a nossa ótica confirma a montagem com você.'
     };
 
     function sinal(v) { return (v > 0 ? '+' : '') + Number(v).toFixed(2).replace('.', ','); }
@@ -4049,7 +4070,7 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
             track('recomendou', {
                 tipo: rec.tipo, opcoes: rec.opcoes.map(function (o) { return o.lente.id; }),
                 lente: st.lente ? st.lente.nome : null, preco: st.lente ? st.lente.preco : null,
-                visao: st.visao, trat: st.trat, uso: st.uso, grau: st.receita || null, balgriff: ehBalgriff()
+                visao: st.visao, trat: st.trat, uso: st.uso, grau: st.receita || null, balgriff: ehBalgriff(), policarbonato: pedePolicarbonato()
             });
         }
         $('#q-form-receita').hidden = true;
@@ -4059,7 +4080,7 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
     }
 
     function recomendarAgora() {
-        mostrarResultado(window.recomendarSirena({ visao: st.visao, trat: st.trat, receita: st.receita, balgriff: ehBalgriff(), uso: st.uso }));
+        mostrarResultado(window.recomendarSirena({ visao: st.visao, trat: st.trat, receita: st.receita, balgriff: ehBalgriff(), policarbonato: pedePolicarbonato(), uso: st.uso }));
     }
 
     /* Receita lida/digitada: monofocal com adicao -> pergunta o uso (nunca infere pelo sinal) */
