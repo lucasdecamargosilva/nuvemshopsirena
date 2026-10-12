@@ -4338,9 +4338,12 @@ if (typeof window !== 'undefined') (function () {
                 if (e.visao === 'mono' && e.uso === 'perto' && add) { od.esf += add; oe.esf += add; }
                 if (!(od.esf === 0 && od.cil === 0 && oe.esf === 0 && oe.cil === 0)) {
                     var esf = Math.max(Math.abs(od.esf), Math.abs(oe.esf)), cil = Math.max(Math.abs(od.cil), Math.abs(oe.cil));
-                    var f = gi.faixas.filter(function (x) { return esf >= Number(x.de) - 1e-9 && esf <= Number(x.ate) + 1e-9 && cil <= Number(x.cil) + 1e-9; })[0];
+                    var ad = (e.visao === 'multi' || (e.opcao && /multi/i.test(String(e.opcao)))) && add != null && isFinite(add) ? Math.abs(add) : null;   // multifocal: a faixa e a lente também respeitam a adição (13/10/2026)
+                    var f = gi.faixas.filter(function (x) { return esf >= Number(x.de) - 1e-9 && esf <= Number(x.ate) + 1e-9 && cil <= Number(x.cil) + 1e-9 &&
+                        (ad == null || ((x.addMin == null || ad >= Number(x.addMin) - 1e-9) && (x.addMax == null || ad <= Number(x.addMax) + 1e-9))); })[0];
                     var ids = (f && f.cel && ((e.tratOp && (f.cel[e.tratOp] || []).length) ? f.cel[e.tratOp] : f.cel[e.trat])) || [];   // tratamento criado: coluna própria ou a do tratamento-base
-                    var ops = ids.map(function (id, i) { var l = L_(String(id)); return l ? op(l, i ? SELO.avaliar : SELO.ideal) : null; }).filter(Boolean);
+                    var ops = ids.map(function (id) { return L_(String(id)); }).filter(function (l) { return l && (ad == null || ((l.addMin == null || ad >= l.addMin - 1e-9) && (l.addMax == null || ad <= l.addMax + 1e-9))); })
+                        .map(function (l, i) { return op(l, i ? SELO.avaliar : SELO.ideal); });
                     if (ops.length) return { tipo: e.visao === 'multi' && ops.length > 1 ? 'multi' : 'grade', opcoes: ops, olhos: [od, oe] };
                     if (gi.fora !== 'auto') return { atendimento: 'fora_grade', olhos: [od, oe] };
                 }
