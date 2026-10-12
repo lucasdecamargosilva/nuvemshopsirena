@@ -1028,7 +1028,7 @@
     <button class="q-opt" data-receita="digitar">
         <span class="q-opt-t">&#9000; Digitar minha receita</span>
         <span class="q-opt-s">Campos separados por olho</span></button>
-    <button class="q-opt q-opt-destaque" data-receita="depois">
+    <button class="q-opt" data-receita="depois">
         <span class="q-opt-t">&#128172; Estou sem a receita</span>
         <span class="q-opt-s">Escolha a lente agora e envie a receita depois pelo WhatsApp</span></button>
 
