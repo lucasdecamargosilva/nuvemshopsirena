@@ -3905,6 +3905,7 @@ if (typeof window !== 'undefined') { window.LENTES = LENTES; window.recomendarSi
      - cores (tema).
    Sem config, sem rede ou erro: nada muda. Mesmo bloco em todos os widgets com fluxo de lentes. */
 var PLLC = window.PLLC || (function () {
+    var atual = null;   // config já carregada (etapas() lê daqui)
     var SUPA = 'https://quantic-supabase.k5jwra.easypanel.host';
     var ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.pCFnSnrlSUM2EwXi9gxAegpoC-9U0Mjx3iAtROR-E20';
     var promessa = null;
@@ -3929,7 +3930,15 @@ var PLLC = window.PLLC || (function () {
                 }).catch(function () { fim(null); });
             } catch (e) { fim(null); }
         });
+        promessa.then(function (c) { atual = c; });
         return promessa;
+    }
+    // Etapas editáveis pelo painel (com os padrões de hoje quando a loja não mexeu)
+    function etapas() {
+        var e = { telefone: { ativo: true }, tratamento: { ativo: true, padrao: '' }, receita: { posicao: 'final' } };
+        var s = (atual && atual.etapas) || {};
+        Object.keys(e).forEach(function (k) { if (s[k] && typeof s[k] === 'object') for (var x in s[k]) e[k][x] = s[k][x]; });
+        return e;
     }
     function fmt(t) {
         var h = String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -3995,7 +4004,7 @@ var PLLC = window.PLLC || (function () {
         w.__pllc = true;
         return w;
     }
-    return { carregar: carregar, catalogo: catalogo, opcoes: opcoes, tema: tema, embrulha: embrulha, fmt: fmt, dominio: dominio };
+    return { carregar: carregar, catalogo: catalogo, opcoes: opcoes, tema: tema, embrulha: embrulha, fmt: fmt, dominio: dominio, etapas: etapas };
 })();
 window.PLLC = PLLC;
 
@@ -4278,7 +4287,7 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
     function seguirComReceita(r) {
         st.receita = r; st.uso = null;
         if (st.visao === 'mono' && r.adicao) { track('pergunta_uso', {}); ir('q-step-uso'); return; }
-        recomendarAgora();
+        _plDepoisDaReceita(recomendarAgora);
     }
 
     /* ---------- WhatsApp: primeira etapa do fluxo ---------- */
@@ -4311,7 +4320,36 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
         if (inp && !inp.value.replace(/[^0-9]/g, '')) inp.value = telMascara(d);
         try { localStorage.setItem('pl_last_phone', d); } catch (e) { }
     }
+    /* ---------- Etapas editáveis pelo painel (PLLC.etapas, 12/10/2026) ----------
+       Tratamento pode virar um padrão e a receita pode vir antes do tratamento.
+       A recomendação continua a mesma: só muda a ordem/quais telas aparecem. */
+    function _plTratPadrao() {
+        var p = PLLC.etapas().tratamento.padrao;
+        var ok = $$('#q-step-receita [data-trat]').filter(function (b) { return b.style.display !== 'none' && !b.disabled; })
+            .map(function (b) { return b.getAttribute('data-trat'); });
+        return ok.indexOf(p) !== -1 ? p : (ok[0] || p);
+    }
+    function _plPintaTrat() { if (typeof pintarTratamentos === 'function') pintarTratamentos(st.visao); }
+    function _plDepoisDaVisao() {
+        var e = PLLC.etapas();
+        st.trat = null; st.receitaOk = false;
+        if (e.receita.posicao === 'inicio') { ir('q-step-upload'); return; }
+        _plPintaTrat();
+        if (e.tratamento.ativo === false) { st.trat = _plTratPadrao(); track('tratamento', { visao: st.visao, trat: st.trat, padrao: true }); ir('q-step-upload'); return; }
+        ir('q-step-receita');
+    }
+    function _plDepoisDaReceita(seguir) {
+        st.receitaOk = true;
+        if (!st.trat) {
+            _plPintaTrat();
+            if (PLLC.etapas().tratamento.ativo === false) { st.trat = _plTratPadrao(); track('tratamento', { visao: st.visao, trat: st.trat, padrao: true }); seguir(); return; }
+            ir('q-step-receita'); return;
+        }
+        seguir();
+    }
+
     function pedeTelefone(depois) {
+        if (PLLC.etapas().telefone.ativo === false) { depois(); return; }   // loja desligou o WhatsApp no início
         if (telAtual()) { depois(); return; }
         _telPendente = depois;
         var inp = document.getElementById('q-lentes-tel');
@@ -4433,19 +4471,19 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
             e.preventDefault(); st.visao = t.dataset.visao; st.receita = null; st.uso = null;
             track('visao', { visao: st.visao, balgriff: ehBalgriff() });
             if (st.visao === 'semgrau') { st.trat = 'AB'; recomendarAgora(); }
-            else { pintarTratamentos(); ir('q-step-receita'); }
+            else _plDepoisDaVisao();
             return;
         }
-        if (t.dataset.trat) { e.preventDefault(); st.trat = t.dataset.trat; track('tratamento', { visao: st.visao, trat: st.trat }); ir('q-step-upload'); return; }
+        if (t.dataset.trat) { e.preventDefault(); st.trat = t.dataset.trat; track('tratamento', { visao: st.visao, trat: st.trat }); if (st.receitaOk) recomendarAgora(); else ir('q-step-upload'); return; }
 
         if (t.id === 'q-abrir-arquivo') { e.preventDefault(); track('receita_metodo', { metodo: 'enviar' }); $('#q-arquivo').click(); return; }
         if (t.dataset.receita === 'digitar') { e.preventDefault(); track('receita_metodo', { metodo: 'digitar' }); limparReceita(); abrirFormReceita('Digite sua receita', null); return; }
         if (t.dataset.receita === 'depois') {
             e.preventDefault(); st.receita = null; st.uso = null;
             track('receita_metodo', { metodo: 'whatsapp_depois' });
-            recomendarAgora(); return;
+            _plDepoisDaReceita(recomendarAgora); return;
         }
-        if (t.dataset.uso) { e.preventDefault(); st.uso = t.dataset.uso; track('uso', { uso: st.uso }); recomendarAgora(); return; }
+        if (t.dataset.uso) { e.preventDefault(); st.uso = t.dataset.uso; track('uso', { uso: st.uso }); _plDepoisDaReceita(recomendarAgora); return; }
 
         if (t.id === 'q-ver-lente') {
             e.preventDefault();
