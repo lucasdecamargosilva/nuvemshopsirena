@@ -5002,12 +5002,14 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
     }
 
     /* ---------- botao na tela de resultado do provador ---------- */
+    /* 13/10/2026: o fluxo so aparece se a loja ligou no dashboard (config.geral.ativo === true; ausente = desligado). */
+    function _plFluxoLigado() { if (window.PL_LENTES_PREVIEW) return true; var c = PLLC.cfgAtual(); return !!(c && c.geral && c.geral.ativo === true); }
     function revelarBotao() {
         var buy = document.getElementById('q-btn-buy-now');
         var lentes = document.getElementById('q-btn-escolher-lentes');
         if (!buy || !lentes) return;
         var visivel = buy.style.display && buy.style.display !== 'none';
-        lentes.style.display = visivel && ehArmacaoDeGrau() ? 'flex' : 'none';
+        lentes.style.display = visivel && ehArmacaoDeGrau() && _plFluxoLigado() ? 'flex' : 'none';
     }
 
     /* ---------- botao "ESCOLHER LENTES E COMPRAR" na pagina do produto ---------- */
@@ -5035,6 +5037,7 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
     }
     function inserirBotaoProduto() {
         if (!ehArmacaoDeGrau()) return true;   // sol/estojo: sem botao (e para de tentar)
+        if (!_plFluxoLigado()) return false;   // desligado no dashboard: sem botao
         var linhas = [];
         var real = document.querySelector('#product_form [data-component="product.add-to-cart"], #product_form .js-addtocart:not(.js-scroll-to-form)');
         var fixo = document.querySelector('.js-addtocart.js-scroll-to-form, .js-scroll-to-form.btn-add-to-cart');
