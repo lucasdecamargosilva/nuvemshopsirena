@@ -4397,7 +4397,7 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
     /* Piloto: fluxo de lentes SO nestes produtos (handle da URL /produtos/<handle>/).
        Lista vazia = desligado em todos. Liberar para todos = PL_LENTES_TODOS = true. */
     var PL_LENTES_PRODUTOS = ['linha-sirena-gwen', 'linha-sirena-jennifer'];   // Jennifer: teste do Julio (policarbonato), 12/10/2026
-    var PL_LENTES_TODOS = false;
+    var PL_LENTES_TODOS = true;   // 13/10/2026: liberado para todas as armações de grau; quem liga/desliga agora é o interruptor do dashboard (config.geral.ativo)
     function liberadoAqui() {
         if (PL_LENTES_TODOS || window.PL_LENTES_PREVIEW) return true;   // prévia do painel: libera
         var m = location.pathname.match(/\/produtos\/([^/?#]+)/);
