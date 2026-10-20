@@ -4489,7 +4489,11 @@ if (typeof window !== 'undefined') (function () {
                 if (!(od.esf === 0 && od.cil === 0 && oe.esf === 0 && oe.cil === 0)) {
                     var esf = Math.max(Math.abs(od.esf), Math.abs(oe.esf)), cil = Math.max(Math.abs(od.cil), Math.abs(oe.cil));
                     var ad = (e.visao === 'multi' || (e.opcao && /multi/i.test(String(e.opcao)))) && add != null && isFinite(add) ? Math.abs(add) : null;   // multifocal: a faixa e a lente também respeitam a adição (13/10/2026)
-                    var f = gi.faixas.filter(function (x) { return esf >= Number(x.de) - 1e-9 && esf <= Number(x.ate) + 1e-9 && cil <= Number(x.cil) + 1e-9 &&
+                    // olho de maior grau decide: negativo usa de/ate; positivo usa pde/pate (faixa antiga sem esses campos = igual ao negativo; null = não atende positivo) — 20/10/2026
+                    var pos = (Math.abs(od.esf) >= Math.abs(oe.esf) ? od.esf : oe.esf) > 0;
+                    var noGrau = function (x) { var de = x.de, ate = x.ate; if (pos && (('pde' in x) || ('pate' in x))) { if (x.pde == null || x.pate == null) return false; de = x.pde; ate = x.pate; }
+                        return esf >= Number(de) - 1e-9 && esf <= Number(ate) + 1e-9; };
+                    var f = gi.faixas.filter(function (x) { return noGrau(x) && cil <= Number(x.cil) + 1e-9 &&
                         (ad == null || ((x.addMin == null || ad >= Number(x.addMin) - 1e-9) && (x.addMax == null || ad <= Number(x.addMax) + 1e-9))); })[0];
                     var ids = (f && f.cel && ((e.tratOp && (f.cel[e.tratOp] || []).length) ? f.cel[e.tratOp] : f.cel[e.trat])) || [];   // tratamento criado: coluna própria ou a do tratamento-base
                     var ops = ids.map(function (id) { return L_(String(id)); }).filter(function (l) { return l && (ad == null || ((l.addMin == null || ad >= l.addMin - 1e-9) && (l.addMax == null || ad <= l.addMax + 1e-9))); })
