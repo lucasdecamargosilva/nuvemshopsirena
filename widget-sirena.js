@@ -4131,6 +4131,8 @@ var PLLC = window.PLLC || (function () {
             if (c.ativo === false) { LENTES.splice(i, 1); continue; }
             if (String(c.nome || '').trim()) L.nome = String(c.nome).trim();
             var p = Number(c.preco); if (isFinite(p) && p > 0) L.preco = p;
+            // preço cheio (riscado) vindo da loja pelo painel (23/10/2026): null = sem promoção, some o riscado
+            if ('precoDe' in c) { var pd = Number(c.precoDe); L.precoDe = (c.precoDe != null && isFinite(pd) && pd > (L.preco || 0)) ? pd : null; }
             if (c.prazo != null && c.prazo !== '') { var d = parseInt(c.prazo, 10); if (d > 0 && d < 120) L.prazo = d; }
         }
     }
