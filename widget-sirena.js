@@ -5248,7 +5248,9 @@ if (typeof module !== 'undefined') { module.exports = { LENTES, recomendarSirena
         if (!ehArmacaoDeGrau()) return true;   // sol/estojo: sem botao (e para de tentar)
         if (!_plFluxoLigado()) return false;   // desligado no dashboard: sem botao
         var linhas = [];
-        var real = document.querySelector('#product_form [data-component="product.add-to-cart"], #product_form .js-addtocart:not(.js-scroll-to-form)');
+        // 28/10/2026: pega o "Comprar" VISÍVEL — na página de lente da Koros o 1º da lista é um escondido e o botão não aparecia.
+        var _reais = [].slice.call(document.querySelectorAll('#product_form [data-component="product.add-to-cart"], #product_form .js-addtocart:not(.js-scroll-to-form)'));
+        var real = _reais.filter(function (x) { return x.offsetParent !== null; })[0] || _reais[0] || null;
         var fixo = document.querySelector('.js-addtocart.js-scroll-to-form, .js-scroll-to-form.btn-add-to-cart');
         [real, fixo].forEach(function (btn) {
             if (!btn) return;
